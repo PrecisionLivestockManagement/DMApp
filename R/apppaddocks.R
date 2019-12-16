@@ -1,12 +1,12 @@
-#' Retrieves paddocks from the DataMuster database
+#' Retrieves paddock information from the DataMuster database
 #'
-#' This function provides a list of paddock polygons for a property. If you need assistance please email \email{info@@datamuster.net.au} to seek help or suggest improvements.
+#' This function allows a list of paddock polygons to be retreived from the DataMuster database via the DataMuster website
 #' @name apppaddocks
-#' @param property the name of the property to query
-#' @param username if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring
-#' @param password if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access
+#' @param property the name of the property to search the database
+#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param password a password to access the DataMuster database
 #' @return a spatialpolygonsdataframe with a list of the paddock names and associated polygon coordinates
-#' @author Dave Swain \email{dave.swain@@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@@datamuster.net.au}
+#' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @import keyring
 #' @import dplyr

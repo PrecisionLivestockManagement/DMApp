@@ -27,26 +27,26 @@ apptsisessionupload(
 
 \item{liveweight}{a list of cattle weights}
 
-\item{property}{the name of the property}
+\item{property}{the name of the property that the cattle belong}
 
-\item{NLIS}{a list of cattle RFID numbers}
+\item{NLIS}{a list of cattle NLIS numbers}
 
-\item{pdkfrom}{a list of paddock names the cattle have moved from}
+\item{pdkfrom}{a list of paddock names that the cattle have moved from}
 
-\item{pdkto}{a list of paddock names the cattle have moved to}
+\item{pdkto}{a list of paddock names that the cattle have moved to}
 
 \item{notes}{observations made by the stationhand as a character entry}
 
-\item{username}{if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring}
+\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
 
-\item{password}{if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access}
+\item{password}{a password to access the DataMuster database}
 }
 \value{
-a message that indicates the data has been successfully uploaded
+a message that indicates whether or not the data has been successfully uploaded
 }
 \description{
-This function allows Gallagher TSi session data to be uploaded via the DataMuster website
+This function allows Gallagher TSi session data to be uploaded to the DataMuster database via the DataMuster website
 }
 \author{
-Dave Swain \email{dave.swain@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@datamuster.net.au}
+Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
 }

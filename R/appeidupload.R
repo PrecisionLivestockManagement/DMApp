@@ -3,12 +3,12 @@
 #' This function allows DataMuster EID data to be uploaded via the DataMuster website
 #' @name appeidupload
 #' @param RFID a list of the cattle RFID numbers
-#' @param datetime a list of timestamps in POSIXct format
+#' @param datetime a list of timestamp data in POSIXct format
 #' @param ALMS a list of ALMS identification codes as character entries
-#' @param username if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring
-#' @param password if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access
-#' @return a message that indicates the data has been successfully uploaded
-#' @author Dave Swain \email{dave.swain@@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@@datamuster.net.au}
+#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param password a password to access the DataMuster database
+#' @return a message that indicates whether or not the data has been successfully uploaded
+#' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @import keyring
 #' @export

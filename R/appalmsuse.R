@@ -1,22 +1,22 @@
-#' Upload ALMS use data
+#' Retreive cattle ALMS use data from the DataMuster database
 #'
-#' This function allows ALMS usage data to be added to the DataMuster database
-#' @name appalmsusenew
-#' @param property the name of the property to search the DataMuster MongoDB Atlas server
-#' @param start provide a start date to be returned, this has to be in date format.
-#' @param end provide a end date to be returned, this has to be in date format.
-#' @param username if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring
-#' @param password if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access
-#' @return a dataframe with a list of the cattle numbers associated with the ALMS and the number of cattle recorded
-#' @author Dave Swain \email{dave.swain@@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@@datamuster.net.au}
+#' This function allows cattle ALMS usage data to be retreived from the DataMuster database via the DataMuster website
+#' @name appalmsuse
+#' @param property the name of the property to search the database
+#' @param start the start date of data to be returned, in date format
+#' @param end the end date of data to be returned, in date format
+#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param password a password to access the DataMuster database
+#' @return a dataframe showing individual cattle and a daily indicator of whether or not they were recorded by the ALMS, 1 = recorded and 0 = not recorded
+#' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @import keyring
 #' @import dplyr
+#' @import DMMongoDB
 #' @export
 
 
-appalmsusenew <- function(property, start=NULL, end=NULL, username = NULL, password = NULL){
-
+appalmsuse <- function(property, start=NULL, end=NULL, username=NULL, password=NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]

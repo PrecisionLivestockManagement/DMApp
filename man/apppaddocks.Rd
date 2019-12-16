@@ -2,23 +2,23 @@
 % Please edit documentation in R/apppaddocks.R
 \name{apppaddocks}
 \alias{apppaddocks}
-\title{Retrieves paddocks from the DataMuster database}
+\title{Retrieves paddock information from the DataMuster database}
 \usage{
 apppaddocks(property, username = NULL, password = NULL)
 }
 \arguments{
-\item{property}{the name of the property to query}
+\item{property}{the name of the property to search the database}
 
-\item{username}{if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring}
+\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
 
-\item{password}{if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access}
+\item{password}{a password to access the DataMuster database}
 }
 \value{
 a spatialpolygonsdataframe with a list of the paddock names and associated polygon coordinates
 }
 \description{
-This function provides a list of paddock polygons for a property. If you need assistance please email \email{info@datamuster.net.au} to seek help or suggest improvements.
+This function allows a list of paddock polygons to be retreived from the DataMuster database via the DataMuster website
 }
 \author{
-Dave Swain \email{dave.swain@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@datamuster.net.au}
+Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
 }

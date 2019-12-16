@@ -15,24 +15,22 @@ appupdatepaddock(
 )
 }
 \arguments{
-\item{RFID}{this is a list of cattle RFID numbers}
+\item{RFID}{a list of cattle RFID numbers}
 
-\item{property}{the name of the property to search the DataMuster MongoDB Atlas server}
+\item{property}{the name of the property that the cattle belong}
 
-\item{date}{provide the date that the new paddock allocation was applied, this has to be in date format. Default is today's date.}
+\item{date}{the date that the cattle were moved in date format, the default is today's date}
 
-\item{username}{if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring}
+\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
 
-\item{password}{if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access}
-
-\item{addtoherd}{this indicates whether or not there are cattle already allocated to the paddock. use addtoherd = TRUE to ignore.}
+\item{password}{a password to access the DataMuster database}
 }
 \value{
-a message that indicates the RFID tag number has been successfully updated
+a message that indicates whether or not the information has been successfully updated
 }
 \description{
-This function allocates individual or groups of cattle to paddocks. It searches based on a list of RFID values. It is recommended that you use the propsearch function to find a list of cattle RFID numbers for a particular property. If you need assistance please email \email{info@datamuster.net.au} to seek help or suggest improvements.
+This function allows individuals or groups of cattle to be allocated to paddocks in the DataMuster database via the DataMuster website app
 }
 \author{
-Dave Swain \email{dave.swain@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@datamuster.net.au}
+Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
 }
