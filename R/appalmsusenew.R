@@ -17,6 +17,7 @@
 
 appalmsusenew <- function(property, start=NULL, end=NULL, username = NULL, password = NULL){
 
+
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
     password =  keyring::key_get("DMMongoDB", username)
