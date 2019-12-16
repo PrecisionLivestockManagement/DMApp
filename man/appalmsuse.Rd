@@ -2,32 +2,22 @@
 % Please edit documentation in R/appalmsuse.R
 \name{appalmsuse}
 \alias{appalmsuse}
-\title{Retreive cattle ALMS use data from the DataMuster database}
+\title{Retrieves cattle ALMS useage information from the DataMuster database}
 \usage{
-appalmsuse(
-  property,
-  start = NULL,
-  end = NULL,
-  username = NULL,
-  password = NULL
-)
+appalmsuse(property, start = NULL, username = NULL, password = NULL)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
-
-\item{start}{the start date of data to be returned, in date format}
-
-\item{end}{the end date of data to be returned, in date format}
 
 \item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a dataframe showing individual cattle and a daily indicator of whether or not they were recorded by the ALMS, 1 = recorded and 0 = not recorded
+a dataframe with a list of cattle and a daily visit indicator, 0 = not recorded and 1 = recorded
 }
 \description{
-This function allows cattle ALMS usage data to be retreived from the DataMuster database via the DataMuster website
+This function allows cattle ALMS use data to be retreived from the DataMuster database via the DataMuster website app
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
