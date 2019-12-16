@@ -1,6 +1,6 @@
 #' Retrieves cattle information from the DataMuster database
 #'
-#' This function allows cattle information to be retreived from the DataMuster database
+#' This function allows cattle information to be retreived from the DataMuster database via the DataMuster website app
 #' @name appcattle
 #' @param property the name of the property to search the database
 #' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access

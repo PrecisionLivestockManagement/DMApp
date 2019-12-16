@@ -17,7 +17,7 @@ appcattle(property, username = NULL, password = NULL)
 a spatialpointsdataframe with a list of the RFID numbers and a number of other data points
 }
 \description{
-This function allows cattle information to be retreived from the DataMuster database
+This function allows cattle information to be retreived from the DataMuster database via the DataMuster website app
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
