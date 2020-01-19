@@ -14,7 +14,7 @@
 #' @export
 
 
-appcattle <- function(property, username=NULL, password=NULL){
+appcattle <- function(property, sex, category, paddockselect, paddock, weightselect, minwt, maxwt, username=NULL, password=NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
@@ -22,14 +22,26 @@ appcattle <- function(property, username=NULL, password=NULL){
   }
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
-  cattle <- mongo(collection = "Cattle", db = "DataMuster",
-    url = pass,
-    verbose = T)
+  cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
 
-  property1 <- paste(unlist(property), collapse = '", "' )
-  filterstation <- sprintf('{"stationname":{"$in":["%s"]}}', property1)
+  property <- paste(unlist(property), collapse = '", "' )
+
+  if(sex == "all"){sex <- paste(unlist(c("male", "female")), collapse = '", "')}else{sex <- paste(unlist(sex), collapse = '", "' )}
+
+  if(category == "all"){category <- paste(unlist(c("growing", "breeding")), collapse = '", "')}else{category <- paste(unlist(category), collapse = '", "' )}
+
+  if(weightselect==1){
+    minwt <- 0
+    maxwt <- 2000}
+
+  if(paddockselect==1||is.null(paddock)){
+
+  filterdata <- sprintf('{"stationname":{"$in":["%s"]}, "properties.sex":{"$in":["%s"]}, "properties.category":{"$in":["%s"]}, "properties.wkweight":{"$gte":%s}, "properties.wkweight":{"$lte":%s}}', property, sex, category, minwt, maxwt)}else{
+  paddock <- paste(unlist(paddock), collapse = '", "' )
+  filterdata <- sprintf('{"stationname":{"$in":["%s"]}, "properties.sex":{"$in":["%s"]}, "properties.category":{"$in":["%s"]}, "properties.wkweight":{"$gte":%s}, "properties.wkweight":{"$lte":%s}, "properties.Paddock":{"$in":["%s"]}}', property, sex, category, minwt, maxwt, paddock)}
+
   lookfor <- sprintf('{"stationname":true, "RFID":true, "properties.Management":true, "geometry":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true, "properties.stweight":true, "properties.stwtdate":true, "properties.weight":true, "properties.recordedtime":true, "properties.wkweight":true, "properties.wkwtdate":true, "properties.ALMS":true, "_id":false}')
-  cattleinfo <- cattle$find(query = filterstation, fields=lookfor)
+  cattleinfo <- cattle$find(query = filterdata, fields=lookfor)
 
   if (nrow(cattleinfo) != 0){
 
@@ -58,9 +70,9 @@ appcattle <- function(property, username=NULL, password=NULL){
   cattleinfo$stwtdate <- as.Date(cattleinfo$stwtdate, tz = "Australia/Brisbane")
   cattleinfo$wkwtdate <- as.Date(cattleinfo$wkwtdate, tz = "Australia/Brisbane")
 
-  cattleinfospatial <- SpatialPointsDataFrame(data.frame(matrix(unlist(cattleinfo$geom), nrow=length(cattleinfo$geom), byrow=T)), cattleinfo%>%select(-"geom"))
+  cattleinfo <- cattleinfo %>% rename(property = stationname)
 
-  cattleinfospatial <- cattleinfospatial %>% rename(property = stationname)
+  cattleinfospatial <- SpatialPointsDataFrame(data.frame(matrix(unlist(cattleinfo$geom), nrow=length(cattleinfo$geom), byrow=T)), cattleinfo%>%select(-"geom"))
 
   #cattleinfospatial <- SpatialPointsDataFrame(data.frame(matrix(c(0, 0), nrow=1, ncol=2, byrow = TRUE)), cattleinfo)
 
