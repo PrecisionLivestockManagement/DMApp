@@ -4,7 +4,7 @@
 \alias{appalmsuse}
 \title{Retrieves cattle ALMS useage information from the DataMuster database}
 \usage{
-appalmsuse(property, start = NULL, username = NULL, password = NULL)
+appalmsuse(property, start, sex, category, username = NULL, password = NULL)
 }
 \arguments{
 \item{property}{the name of the property to search the database}

@@ -4,27 +4,18 @@
 \alias{appweeklywts}
 \title{Retrieves cattle weekly ALMS weights from the DataMuster database via the DataMuster website app}
 \usage{
-appweeklywts(
-  RFID,
-  start = NULL,
-  end = NULL,
-  values = NULL,
-  username = NULL,
-  password = NULL
-)
+appweeklywts(RFID, start, username = NULL, password = NULL)
 }
 \arguments{
 \item{RFID}{this is a list of cattle RFID numbers}
 
 \item{start}{a start date to be returned, this has to be in date format}
 
-\item{end}{an end date to be returned, this has to be in date format}
-
-\item{values}{this is the minimum number of weight values that need to be recorded to be uploaded, the default is 1}
-
 \item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
 
 \item{password}{a password to access the DataMuster database}
+
+\item{end}{an end date to be returned, this has to be in date format}
 }
 \value{
 A dataframe of the RFID numbers that have been returned and weekly average weights for each animal
