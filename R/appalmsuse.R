@@ -13,7 +13,7 @@
 #' @export
 
 
-appalmsuse <- function(property, start = NULL, username = NULL, password = NULL){
+appalmsuse <- function(property, start, sex, category, username=NULL, password=NULL){
 
   days <- as.numeric(difftime(Sys.Date(), as.Date(start), unit = "days"))
 
@@ -32,16 +32,18 @@ appalmsuse <- function(property, start = NULL, username = NULL, password = NULL)
   almsuse <- mongo(collection = "ALMSUse", db = "DataMuster", url = pass, verbose = T)
 
   property <- paste(unlist(property), collapse = '", "' )
-if (is.null(start)){filterdata <- sprintf('{"Property":{"$in":["%s"]}', property)} else {
-  filterdata <- sprintf('{"Property":{"$in":["%s"]},"Date": { "$gte" : { "$date" : "%s" }}}', property, trumpper)}
+
+  if(sex == "all"){sex <- paste(unlist(c("male", "female")), collapse = '", "')}else{sex <- paste(unlist(sex), collapse = '", "' )}
+
+  if(category == "all"){category <- paste(unlist(c("growing", "breeding")), collapse = '", "')}else{category <- paste(unlist(category), collapse = '", "' )}
+
+  filterdata <- sprintf('{"Property":{"$in":["%s"]}, "Date":{"$gte":{"$date":"%s"}}, "Sex":{"$in":["%s"]}, "Category":{"$in":["%s"]}}', property, trumpper, sex, category)
 
   data <- almsuse$find(query = filterdata, fields = '{"_id":false}')
 
   if (nrow(data) != 0){
   data <- data%>%
     mutate(Date = as.Date(Date, tz = "Australia/Brisbane"))}
-
-
 
   return(data)
 }
