@@ -17,7 +17,7 @@
 #' @export
 
 
-get_cattle <- function(property, sex = NULL, paddock = NULL, category = NULL, fields = NULL, username = NULL, password = NULL){
+get_cattle <- function(property, sex, category, fields = NULL, username = NULL, password = NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
@@ -26,7 +26,8 @@ get_cattle <- function(property, sex = NULL, paddock = NULL, category = NULL, fi
 
   property <- sprintf('"stationname":"%s",', property)
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"properties.sex":"%s",', sex)}
-  if(is.null(paddock)){paddock <- NULL} else {paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
+  #if(is.null(paddock)){} else {paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
+  paddock <- NULL
   if(category == "all"){category <- NULL} else {category <- sprintf('"properties.category":"%s",', category)}
 
   if(is.null(fields)){fields <- c("RFID", "properties.Management", "properties.sex", "properties.category", "properties.Paddock")}
@@ -57,7 +58,7 @@ cattledataf <- cbind(cattledata[-1], cattledata$properties)%>%
                rename(Tag = Management, Sex = sex, Category = category)%>%
                select(RFID, Tag, Sex, Category, Paddock)}
 
-if(!exists("cattledataf") | exists("cattledataf") && nrow(cattledataf)){
+if(!exists("cattledataf") | exists("cattledataf") && nrow(cattledataf) == 0){
 cattledataf <- setNames(data.frame(matrix(ncol = 5, nrow = 0)), c("RFID", "Tag", "Sex", "Category", "Paddock"))}
 
 cattledataf
