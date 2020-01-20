@@ -6,9 +6,9 @@
 \usage{
 get_cattle(
   property,
-  sex,
+  sex = NULL,
   paddock = NULL,
-  category,
+  category = NULL,
   fields = NULL,
   username = NULL,
   password = NULL
