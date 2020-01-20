@@ -12,6 +12,7 @@
 #' @return a list of cattle with the list of fields defined in the inputs and searched using the search terms.
 #' @author Dave Swain \email{dave.swain@@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@@datamuster.net.au}
 #' @import mongolite
+#' @import dplyr
 #' @import keyring
 #' @export
 
@@ -56,7 +57,7 @@ cattledataf <- cbind(cattledata[-1], cattledata$properties)%>%
                rename(Tag = Management, Sex = sex, Category = category)%>%
                select(RFID, Tag, Sex, Category, Paddock)}
 
-if(nrow(cattledataf) == 0 | !exists("cattledataf")){
+if(!exists("cattledataf") | exists("cattledataf") && nrow(cattledataf)){
 cattledataf <- setNames(data.frame(matrix(ncol = 5, nrow = 0)), c("RFID", "Tag", "Sex", "Category", "Paddock"))}
 
 cattledataf
