@@ -5,10 +5,10 @@
 \title{Retrieve cattle information via the DataMuster website app}
 \usage{
 get_cattle(
-  property = NULL,
-  sex = NULL,
+  property,
+  sex,
   paddock = NULL,
-  category = NULL,
+  category,
   fields = NULL,
   username = NULL,
   password = NULL
