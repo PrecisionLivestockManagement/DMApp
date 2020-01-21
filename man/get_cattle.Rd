@@ -10,6 +10,7 @@ get_cattle(
   category,
   zoom,
   paddock,
+  alms,
   fields = NULL,
   username = NULL,
   password = NULL
@@ -25,6 +26,8 @@ get_cattle(
 \item{zoom}{whole property or paddock zoomchoice}
 
 \item{paddock}{paddock on property}
+
+\item{alms}{TRUE or FALSE, if true filters the data for cattle currently allocated to an alms unit}
 
 \item{fields}{a list of MongoDB cattle collection headers that you want returned}
 

@@ -7,6 +7,7 @@
 #' @param zoom whole property or paddock zoomchoice
 #' @param paddock paddock on property
 #' @param category the class of cattle either breeding or growing
+#' @param alms TRUE or FALSE, if true filters the data for cattle currently allocated to an alms unit
 #' @param fields a list of MongoDB cattle collection headers that you want returned
 #' @param username if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring
 #' @param password if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access
@@ -18,7 +19,7 @@
 #' @export
 
 
-get_cattle <- function(property, sex, category, zoom, paddock, fields = NULL, username = NULL, password = NULL){
+get_cattle <- function(property, sex, category, zoom, paddock, alms, fields = NULL, username = NULL, password = NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
@@ -29,8 +30,9 @@ get_cattle <- function(property, sex, category, zoom, paddock, fields = NULL, us
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"properties.sex":"%s",', sex)}
   if(category == "all"){category <- NULL} else {category <- sprintf('"properties.category":"%s",', category)}
   if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
+  if(alms == "FALSE"){alms <- NULL} else {alms <- sprintf('"properties.ALMS":"%s",', "TRUE")}
 
-  if(is.null(fields)){fields <- c("RFID", "properties.Management", "properties.sex", "properties.category", "properties.Paddock")}
+  #if(is.null(fields)){fields <- c("RFID", "properties.Management", "properties.sex", "properties.category", "properties.Paddock")}
 
 pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
@@ -38,7 +40,7 @@ cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = 
 
 # Set up find query
 
-cattlesearch <-paste0("{", property, sex, paddock, category,"}")
+cattlesearch <-paste0("{", property, sex, paddock, category, alms,"}")
 if(nchar(cattlesearch)==2){}else{
 cattlesearch <- substr(cattlesearch, 1 , nchar(cattlesearch)-2)
 cattlesearch <- paste0(cattlesearch, "}")}
@@ -55,8 +57,17 @@ cattledata <- cattle$find(query = cattlesearch, fields = snappy)
 
 if(nrow(cattledata) != 0){
 cattledataf <- cbind(cattledata[-1], cattledata$properties)%>%
-               rename(Tag = Management, Sex = sex, Category = category)%>%
-               select(RFID, Tag, Sex, Category, Paddock)}
+               rename_all(recode, Management = "Tag", sex = "Sex", category = "Category", stwtdate = "Last Crush Weight Date",
+                                  stweight = "Weight (kg)", recordedtime = "Hours since last ALMS record", wkwtdate = "Last Average ALMS Weight Date", wkweight = "Weight (kg)")%>%
+               mutate_at(vars(ends_with("Date")), as.character, format = "%b %d %Y")%>%
+               mutate_at(vars(ends_with("Date")), funs(ifelse(. == "Jan 01 1970", "", .)))%>%
+               #mutate_at(vars(starts_with("Weight")), funs(round(., 0)))%>%
+               mutate_at(vars(starts_with("Hours")), funs(round(as.numeric(difftime(Sys.time(), ., units = "hours")),0)))%>%
+               mutate_at(vars(starts_with("Hours")), funs(ifelse(. > 1000, NA, .)))%>%
+               select(RFID, Tag, Sex, Category, Paddock, everything())%>%
+               filter(RFID != "xxxxxx")
+}
+
 
 if(!exists("cattledataf") | exists("cattledataf") && nrow(cattledataf) == 0){
 cattledataf <- setNames(data.frame(matrix(ncol = 5, nrow = 0)), c("RFID", "Tag", "Sex", "Category", "Paddock"))}
