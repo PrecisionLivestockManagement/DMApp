@@ -4,6 +4,7 @@
 #' @name get_cattle
 #' @param property property to search for
 #' @param sex male or female
+#' @param zoom whole property or paddock zoomchoice
 #' @param paddock paddock on property
 #' @param category the class of cattle either breeding or growing
 #' @param fields a list of MongoDB cattle collection headers that you want returned
@@ -17,7 +18,7 @@
 #' @export
 
 
-get_cattle <- function(property, sex, category, fields = NULL, username = NULL, password = NULL){
+get_cattle <- function(property, sex, category, zoom, paddock, fields = NULL, username = NULL, password = NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
@@ -26,9 +27,8 @@ get_cattle <- function(property, sex, category, fields = NULL, username = NULL, 
 
   property <- sprintf('"stationname":"%s",', property)
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"properties.sex":"%s",', sex)}
-  #if(is.null(paddock)){} else {paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
-  paddock <- NULL
   if(category == "all"){category <- NULL} else {category <- sprintf('"properties.category":"%s",', category)}
+  if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
 
   if(is.null(fields)){fields <- c("RFID", "properties.Management", "properties.sex", "properties.category", "properties.Paddock")}
 

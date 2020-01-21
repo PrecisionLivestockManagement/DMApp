@@ -8,6 +8,8 @@ get_cattle(
   property,
   sex,
   category,
+  zoom,
+  paddock,
   fields = NULL,
   username = NULL,
   password = NULL
@@ -20,13 +22,15 @@ get_cattle(
 
 \item{category}{the class of cattle either breeding or growing}
 
+\item{zoom}{whole property or paddock zoomchoice}
+
+\item{paddock}{paddock on property}
+
 \item{fields}{a list of MongoDB cattle collection headers that you want returned}
 
 \item{username}{if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring}
 
 \item{password}{if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access}
-
-\item{paddock}{paddock on property}
 }
 \value{
 a list of cattle with the list of fields defined in the inputs and searched using the search terms.
