@@ -8,6 +8,7 @@
 #' @param paddock paddock on property
 #' @param category the class of cattle either breeding or growing
 #' @param alms TRUE or FALSE, if true filters the data for cattle currently allocated to an alms unit
+#' @param timezone the timezone that applies to the cattle data
 #' @param fields a list of MongoDB cattle collection headers that you want returned
 #' @param username if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring
 #' @param password if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access
@@ -19,7 +20,7 @@
 #' @export
 
 
-get_cattle <- function(property, sex, category, zoom, paddock, alms, fields = NULL, username = NULL, password = NULL){
+get_cattle <- function(property, sex, category, zoom, paddock, alms, timezone, fields = NULL, username = NULL, password = NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
@@ -55,14 +56,26 @@ snappy <- sprintf('{%s, "_id":false}', te)
 
 cattledata <- cattle$find(query = cattlesearch, fields = snappy)
 
-if(nrow(cattledata) != 0){
-cattledataf <- cbind(cattledata[-1], cattledata$properties)%>%
+cattledataf <- cbind(cattledata[-1], cattledata$properties)
+
+collist <- colnames(cattledataf)
+
+for(i in 1:length(collist)){
+  if("POSIXt" %in% class(cattledataf[,i])){
+    attributes(cattledataf[,i])$tzone <- timezone}}
+
+s <- Sys.time()
+attr(s,"tzone") <- timezone
+
+if(nrow(cattledataf) != 0){
+cattledataf <- cattledataf%>%
                rename_all(recode, Management = "Tag", sex = "Sex", category = "Category", stwtdate = "Last Crush Weight Date",
                                   stweight = "Weight (kg)", recordedtime = "Hours since last ALMS record", wkwtdate = "Last Average ALMS Weight Date", wkweight = "Weight (kg)")%>%
                mutate_at(vars(ends_with("Date")), as.character, format = "%b %d %Y")%>%
-               mutate_at(vars(ends_with("Date")), funs(ifelse(. == "Jan 01 1970", "", .)))%>%
-               #mutate_at(vars(starts_with("Weight")), funs(round(., 0)))%>%
-               mutate_at(vars(starts_with("Hours")), funs(round(as.numeric(difftime(Sys.time(), ., units = "hours")),0)))%>%
+               mutate_at(vars(ends_with("Date")), funs(ifelse(. == "Jan 01 1970" | . == "Dec 31 1969", "", .)))%>%
+               mutate_at(vars(starts_with("Weight")), funs(round(., 0)))%>%
+               mutate_at(vars(starts_with("Weight")), funs(ifelse(. == 0, as.character(""), as.character(.))))%>%
+               mutate_at(vars(starts_with("Hours")), funs(round(as.numeric(difftime(s, ., units = "hours")),0)))%>%
                mutate_at(vars(starts_with("Hours")), funs(ifelse(. > 1000, NA, .)))%>%
                select(RFID, Tag, Sex, Category, Paddock, everything())%>%
                filter(RFID != "xxxxxx")

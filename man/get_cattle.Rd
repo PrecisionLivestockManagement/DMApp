@@ -11,6 +11,7 @@ get_cattle(
   zoom,
   paddock,
   alms,
+  timezone,
   fields = NULL,
   username = NULL,
   password = NULL
@@ -28,6 +29,8 @@ get_cattle(
 \item{paddock}{paddock on property}
 
 \item{alms}{TRUE or FALSE, if true filters the data for cattle currently allocated to an alms unit}
+
+\item{timezone}{the timezone that applies to the cattle data}
 
 \item{fields}{a list of MongoDB cattle collection headers that you want returned}
 
