@@ -73,7 +73,7 @@ cattledataf <- cattledataf%>%
                                   stweight = "Weight (kg)", recordedtime = "Hours since last ALMS record", wkwtdate = "Last Average ALMS Weight Date", wkweight = "Weight (kg)")%>%
                mutate_at(vars(ends_with("Date")), as.character, format = "%b %d %Y")%>%
                mutate_at(vars(ends_with("Date")), funs(ifelse(. == "Jan 01 1970" | . == "Dec 31 1969", "", .)))%>%
-               mutate_at(vars(starts_with("Weight")), funs(round(., 0)))%>%
+               mutate_at(vars(starts_with("Weight")), funs(round(as.numeric(.), 0)))%>%
                mutate_at(vars(starts_with("Weight")), funs(ifelse(. == 0, as.character(""), as.character(.))))%>%
                mutate_at(vars(starts_with("Hours")), funs(round(as.numeric(difftime(s, ., units = "hours")),0)))%>%
                mutate_at(vars(starts_with("Hours")), funs(ifelse(. > 1000, NA, .)))%>%
