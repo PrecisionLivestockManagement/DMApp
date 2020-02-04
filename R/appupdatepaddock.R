@@ -76,6 +76,8 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date=NULL, username=
           arrpos <- length(banger$pdkhist$dateIN[[1]])
           arrpos1 <- length(banger$pdkhist$dateOUT[[1]])
 
+          prevpaddock <- banger$properties$Paddock
+
       # If current paddock is different to new padock, continue
 
           if (banger$properties$Paddock != paddock[i]){
@@ -84,7 +86,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date=NULL, username=
 
           temppad <- pad[which(pad$paddname == paddock[i]),]
 
-          RFIDIlast <- sprintf('{"$set":{"properties.PaddockdateIN":{"$date":"%s"}, "properties.Paddock":"%s", "properties.PaddockID":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), paddock[i], temppad$`_id`)
+          RFIDIlast <- sprintf('{"$set":{"properties.PaddockdateIN":{"$date":"%s"}, "properties.Paddock":"%s", "properties.PaddockID":"%s", "properties.PrevPaddock":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), paddock[i], temppad$`_id`, prevpaddock)
           RFIDI <- sprintf('{"$set":{"pdkhist.dateOUT.%s":{"$date":"%s"}, "pdkhist.dateIN.%s":{"$date":"%s"}, "pdkhist.name.%s":"%s", "pdkhist.ID.%s":"%s"}}', arrpos1, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos, paddock[i], arrpos, temppad$`_id`)
 
       cattle$update(RFIDS, RFIDI)
