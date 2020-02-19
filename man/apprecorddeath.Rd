@@ -10,6 +10,7 @@ apprecorddeath(
   date,
   cause,
   property,
+  paddock,
   username = NULL,
   password = NULL
 )

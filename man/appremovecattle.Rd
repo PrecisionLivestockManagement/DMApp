@@ -4,7 +4,15 @@
 \alias{appremovecattle}
 \title{Archive cattle in the DataMuster database}
 \usage{
-appremovecattle(RFID, MTag, property, date, username = NULL, password = NULL)
+appremovecattle(
+  RFID,
+  MTag,
+  property,
+  paddock,
+  date,
+  username = NULL,
+  password = NULL
+)
 }
 \arguments{
 \item{RFID}{a list of cattle RFID numbers}
