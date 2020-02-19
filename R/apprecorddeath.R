@@ -16,7 +16,7 @@
 #' @export
 
 
-apprecorddeath <- function(RFID, MTag, date, cause, property, username=NULL, password=NULL){
+apprecorddeath <- function(RFID, MTag, date, cause, property, paddock, username=NULL, password=NULL){
 
   if(is.null(username)||is.null(password)){
     username = keyring::key_list("DMMongoDB")[1,2]
@@ -38,8 +38,8 @@ apprecorddeath <- function(RFID, MTag, date, cause, property, username=NULL, pas
     arrpos2 <- length(banger$almshist$dateOFF[[1]])
 
     IDI <- sprintf('{"$set":{"stationname":"%s", "stationID":"%s", "active":"%s", "exstation":"%s", "geometry.coordinates.0":%s, "geometry.coordinates.1":%s,
-                     "properties.Paddock":"%s", "properties.PaddockID":"%s", "properties.deathcause":"%s", "properties.deathDate":{"$date":"%s"}, "properties.ALMS":"%s", "properties.ALMSID":"%s", "properties.ALMSasset_id":"%s"}}',
-                     "xxxxxx", "xxxxxx", "FALSE", property, 0.0, 0.0, "xxxxxx", "xxxxxx", cause, paste0(date,"T","00:00:00","+1000"),"FALSE", "xxxxxx", "xxxxxx")
+                     "properties.Paddock":"%s", "properties.PaddockID":"%s", "properties.PrevPaddock":"%s", "properties.deathcause":"%s", "properties.deathDate":{"$date":"%s"}, "properties.ALMS":"%s", "properties.ALMSID":"%s", "properties.ALMSasset_id":"%s"}}',
+                     "xxxxxx", "xxxxxx", "FALSE", property, 0.0, 0.0, "xxxxxx", "xxxxxx", paddock[i], cause, paste0(date,"T","00:00:00","+1000"),"FALSE", "xxxxxx", "xxxxxx")
 
     IDL <- sprintf('{"$set":{"pdkhist.dateOUT.%s":{"$date":"%s"}}}', arrpos1, paste0(date,"T","00:00:00","+1000"))
 
