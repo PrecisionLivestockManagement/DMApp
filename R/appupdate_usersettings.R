@@ -22,8 +22,8 @@ appupdate_usersettings <- function(email, language = NULL, lastprop = NULL, user
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   usersettings <- mongo(collection = "UserSettings", db = "DataMuster", url = pass, verbose = T)
 
-  usersinfo <- sprintf('{"User":"%s"}', isolate(email))
-  datainfo <- sprintf('{"$set":{"Language":"%s", "LastProperty":"%s", "createdAt":{"$date":"%s"}}}', isolate(language), isolate(propchoice), paste0(substr(Sys.time(),1,10),"T",substr(Sys.time(),12,19),"+1000"))
+  usersinfo <- sprintf('{"User":"%s"}', email)
+  datainfo <- sprintf('{"$set":{"Language":"%s", "LastProperty":"%s", "createdAt":{"$date":"%s"}}}', language, lastprop, paste0(substr(Sys.time(),1,10),"T",substr(Sys.time(),12,19),"+1000"))
 
   usersettings$update(usersinfo, datainfo, upsert = TRUE)
 
