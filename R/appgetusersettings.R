@@ -1,7 +1,7 @@
 #' Retrieves user settings from the DataMuster database
 #'
 #' This function allows user settings to be retreived from the DataMuster database via the DataMuster website app
-#' @name appusersettings
+#' @name appgetusersettings
 #' @param email the email address of the registered user
 #' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
 #' @param password a password to access the DataMuster database
@@ -12,7 +12,7 @@
 #' @export
 
 
-appusersettings <- function(email, username=NULL, password=NULL){
+appgetusersettings <- function(email, username=NULL, password=NULL){
 
   if(is.null(username)||is.null(password)){
   username = keyring::key_list("DMMongoDB")[1,2]
