@@ -2,27 +2,36 @@
 % Please edit documentation in R/appweeklywts.R
 \name{appweeklywts}
 \alias{appweeklywts}
-\title{Retrieves cattle weekly ALMS weights from the DataMuster database via the DataMuster website app}
+\title{Cattle weekly weights}
 \usage{
-appweeklywts(RFID, start, username = NULL, password = NULL)
+appweeklywts(
+  RFID,
+  start = NULL,
+  end = NULL,
+  values = NULL,
+  username = NULL,
+  password = NULL
+)
 }
 \arguments{
 \item{RFID}{this is a list of cattle RFID numbers}
 
-\item{start}{a start date to be returned, this has to be in date format}
+\item{start}{provide a start date to be returned, this has to be in date format.}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{end}{provide a end date to be returned, this has to be in date format.}
 
-\item{password}{a password to access the DataMuster database}
+\item{values}{this is the minimum number of weight values that need to be recorded to be uploaded. The default is to load all animals that have at least one value.}
 
-\item{end}{an end date to be returned, this has to be in date format}
+\item{username}{if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring}
+
+\item{password}{if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access}
 }
 \value{
-A dataframe of the RFID numbers that have been returned and weekly average weights for each animal
+A list that includes a list of the RFID numbers that have been returned, the list of cattle stations that are associated with these RFID numbers and a dataframe for each RFID number that provides date and weekly average weights for each animal. The weekly average is based on the daily records and only writes a weekly average when there are at least four daily weight for a given week that have a variance of +- 15kg.
 }
 \description{
-This function allows cattle ALMS weekly weight data to be retreived from the DataMuster database via the DataMuster website app
+This function pulls in weekly weights for individual or groups of cattle for specified periods. It searches based on a list of RFID values. It is recommended that you use the propsearch function to find a list of cattle RFID numbers for a particular property. If you need assistance please email \email{info@datamuster.net.au} to seek help or suggest improvements.
 }
 \author{
-Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
+Dave Swain \email{dave.swain@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@datamuster.net.au}
 }
