@@ -33,7 +33,7 @@ appstationinfo <- function(property=NULL, username=NULL, password=NULL){
     propertyinfo <- station$find(query = filterstation, fields=lookfor)}
 
   propertyinfo <- propertyinfo %>%
-    rename(Name = "name", Timezone = "timezone")
+    rename(Name = "stationname", Timezone = "timezone")
   return(propertyinfo)
 
 }
