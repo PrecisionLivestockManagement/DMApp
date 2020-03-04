@@ -1,0 +1,34 @@
+#' Retreive property information from the DataMuster database
+#'
+#' This function retrieves property information from the DataMuster database via the DataMuster website
+#' @name  appgetstations
+#' @param property a list of property names, if NULL all active properties in the database will be returned
+#' @param username a username to access the DataMuster database
+#' @param password a password to access the DataMuster database
+#' @return a dataframe showing property names
+#' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
+#' @import mongolite
+#' @export
+
+
+appgetstations <- function(property=NULL, username, password){
+
+  pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
+  station <- mongo(collection = "Stations", db = "DataMuster", url = pass, verbose = T)
+
+  lookfor <- sprintf('{"stationname":true, "_id":false}')
+
+  if (is.null(property)){
+    filter <- sprintf('{"active":"%s"}', "TRUE")}else{
+    filter <- sprintf('{"active":"%s", "stationname":{"$in":["%s"]}}', "TRUE", property)}
+
+  propertyinfo <- station$find(query = filter, fields = lookfor)
+
+  return(propertyinfo)
+
+}
+
+
+
+
+
