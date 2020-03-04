@@ -4,20 +4,20 @@
 \alias{appgetuser}
 \title{Retrieves user information from the DataMuster database}
 \usage{
-appgetuser(email, username = NULL, password = NULL)
+appgetuser(email, username, password)
 }
 \arguments{
 \item{email}{the email address of the registered user}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a dataframe showing the information associated with the user
+a dataframe showing the users database accesslevel, writeaccess and list of stations
 }
 \description{
-This function allows user information to be retreived from the DataMuster database via the DataMuster website app
+This function retreives user information from the DataMuster database via the DataMuster website app
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
