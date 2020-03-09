@@ -8,6 +8,7 @@
 #' @return a dataframe showing the users database accesslevel, writeaccess and list of stations
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
+#' @import dplyr
 #' @export
 
 
@@ -20,6 +21,9 @@ appgetuser <- function(email, username, password){
   filter <- sprintf('{"loginemail":"%s"}', email)
 
   userinfo <- users$find(query = filter, fields = lookfor)
+
+  userinfo <- userinfo%>%
+              select(loginemail, accesslevel, writeaccess, stations)
 
   return(userinfo)
 
