@@ -2,20 +2,9 @@
 % Please edit documentation in R/appgetcattle.R
 \name{appgetcattle}
 \alias{appgetcattle}
-\title{Retrieves cattle information from the DataMuster database}
+\title{Retrieves cattle from the DataMuster database}
 \usage{
-appgetcattle(
-  property,
-  sex,
-  category,
-  paddockselect,
-  paddock,
-  weightselect,
-  minwt,
-  maxwt,
-  username = NULL,
-  password = NULL
-)
+appgetcattle(property, timezone, username, password)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
@@ -25,10 +14,10 @@ appgetcattle(
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a spatialpointsdataframe with a list of the RFID numbers and a number of other data points
+a spatialpointsdataframe with a list of cattle RFID numbers, management tags, category and sex information, current paddock allocations and weight data
 }
 \description{
-This function allows cattle information to be retreived from the DataMuster database via the DataMuster website app
+This function provides a list of cattle for a property. If you need assistance please email \email{info@datamuster.net.au} to seek help or suggest improvements.
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
