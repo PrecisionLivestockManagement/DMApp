@@ -4,17 +4,19 @@
 \alias{appgetstations}
 \title{Retreive property information from the DataMuster database}
 \usage{
-appgetstations(property = NULL, username, password)
+appgetstations(property, accesslevel, username, password)
 }
 \arguments{
 \item{property}{a list of property names, if NULL all active properties in the database will be returned}
+
+\item{accesslevel}{the users database accesslevel, either "admin" or "user"}
 
 \item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a dataframe showing property names
+a dataframe showing property names and timezone
 }
 \description{
 This function retrieves property information from the DataMuster database via the DataMuster website
