@@ -19,7 +19,8 @@ appgetcattle <- function(property, timezone, username, password){
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
 
   filter <- sprintf('{"stationname":"%s"}', property)
-  lookfor <- sprintf('{"stationname":true, "RFID":true, "properties.Management":true, "geometry":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true, "properties.stweight":true, "properties.stwtdate":true, "properties.weight":true, "properties.recordedtime":true, "properties.wkweight":true, "properties.wkwtdate":true, "properties.ALMS":true, "_id":false}')
+  #lookfor <- sprintf('{"stationname":true, "RFID":true, "properties.Management":true, "geometry":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true, "properties.stweight":true, "properties.stwtdate":true, "properties.weight":true, "properties.recordedtime":true, "properties.wkweight":true, "properties.wkwtdate":true, "properties.ALMS":true, "_id":false}')
+  lookfor <- sprintf('{"RFID":true, "geometry":true, "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
@@ -31,12 +32,13 @@ appgetcattle <- function(property, timezone, username, password){
                 mutate(geom = geometry$coordinates)%>%
                 mutate_at(vars(ends_with("date")), as.Date, tz = timezone)
 
-  cattleinfo <- cbind(cattleinfo[-c(1,2)], cattleinfo$properties)
+  #cattleinfo <- cbind(cattleinfo[-c(1,2)], cattleinfo$properties)
+  cattleinfo <- cattleinfo[-1]
 
   cattleinfospatial <- SpatialPointsDataFrame(data.frame(matrix(unlist(cattleinfo$geom), nrow=length(cattleinfo$geom), byrow=T)), cattleinfo%>%select(-"geom"))
 
-  cattleinfospatial <- cattleinfospatial%>%
-                       rename(property = stationname)
+  #cattleinfospatial <- cattleinfospatial%>%
+  #                     rename(property = stationname)
 
   return(cattleinfospatial)
 
