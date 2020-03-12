@@ -35,6 +35,9 @@ appgetinfrastructure <- function(property, username, password){
 
   infsinfo <- cbind(infsinfo[-1], infsinfo$properties)
 
+  infsinfo <- infsinfo%>%
+              filter(asset_id != "xxxxxx")
+
   return(infsinfo)
 
 }
