@@ -19,27 +19,30 @@ apptodaysdata <- function(alms, timezone, username, password){
 
   wowdata <- mongo(collection = "DailyWts", db = "DataMuster", url = pass, verbose = T)
 
-  alms <- sprintf('"Location":"%s",', alms)
+  if(length(alms) == 0){data <- setNames(data.frame(matrix(ncol = 4, nrow = 0)), c("RFID", "Weight", "Datetime", "Location"))}else{
 
-  start <- as.Date(Sys.Date(), tz = timezone)
+    alms <- sprintf('"Location":"%s",', alms)
 
-  start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))
+    start <- as.Date(Sys.Date(), tz = timezone)
 
-  # Set up query to search for data
+    start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))
 
-  filter <- paste0("{", alms,"}")
-  filter <- substr(filter, 1 , nchar(filter)-2)
-  filter <- paste0(filter, "}")
+    # Set up query to search for data
 
-  lookfor <- sprintf('{"RFID":true, "Wt":true, "datetime":true, "_id":false}')
+    filter <- paste0("{", alms, start,"}")
+    filter <- substr(filter, 1 , nchar(filter)-2)
+    filter <- paste0(filter, "}")
 
-  data <- wowdata$find(query = filter, fields = lookfor)
+    lookfor <- sprintf('{"RFID":true, "Wt":true, "datetime":true, "Location":true, "_id":false}')
 
-  if(nrow(data) !=0){
-  data <- data%>%
-    mutate(datetime = as.POSIXct(strptime(datetime, format = "%Y-%m-%d %H:%M:%S", tz = timezone)))%>%
-    rename(Weight = "Wt", Datetime = "datetime")%>%
-    select("RFID", "Weight", "Datetime")}
+    data <- wowdata$find(query = filter, fields = lookfor)
+
+    if(nrow(data) !=0){
+    data <- data%>%
+      mutate(datetime = as.POSIXct(strptime(datetime, format = "%Y-%m-%d %H:%M:%S", tz = timezone)))%>%
+      rename(Weight = "Wt", Datetime = "datetime")%>%
+      select("RFID", "Weight", "Datetime", "Location")}
+    }
 
   return(data)
 
