@@ -13,7 +13,7 @@
 #' @export
 
 
-appalmsusegraph <- function(property, start, sex, category, alms, timezone, username, password){
+appalmsusegraph <- function(property, start, sex, category, alms, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
@@ -58,7 +58,7 @@ appalmsusegraph <- function(property, start, sex, category, alms, timezone, user
 
   allcattle <- allcattle%>%
                ungroup()%>%
-               mutate(Date = as.character(as.Date(Date, tz = timezone), format = "%b %d"))
+               mutate(Date = as.character(as.Date(Date, tz = "Australia/Brisbane"), format = "%b %d"))
   }
 
   return(allcattle)
