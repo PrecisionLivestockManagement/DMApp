@@ -4,16 +4,7 @@
 \alias{appalmsusegraph}
 \title{Retrieves cattle ALMS useage information from the DataMuster database}
 \usage{
-appalmsusegraph(
-  property,
-  start,
-  sex,
-  category,
-  alms,
-  timezone,
-  username,
-  password
-)
+appalmsusegraph(property, start, sex, category, alms, username, password)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
