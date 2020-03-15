@@ -19,13 +19,16 @@ apptodaysdata <- function(alms, timezone, username, password){
 
   wowdata <- mongo(collection = "DailyWts", db = "DataMuster", url = pass, verbose = T)
 
-  if(length(alms) == 0){data <- setNames(data.frame(matrix(ncol = 4, nrow = 0)), c("RFID", "Weight", "Datetime", "Location"))}else{
+  if(length(alms) == 0){data <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
 
     alms <- sprintf('"Location":"%s",', alms)
 
-    start <- as.Date(Sys.Date(), tz = timezone)
+    start <- Sys.Date()
 
-    start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))
+      if(timezone == "Australia/Brisbane"){
+        start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
+          if(timezone == "America/Argentina/Buenos_Aires"){
+            start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
 
     # Set up query to search for data
 
@@ -33,16 +36,17 @@ apptodaysdata <- function(alms, timezone, username, password){
     filter <- substr(filter, 1 , nchar(filter)-2)
     filter <- paste0(filter, "}")
 
-    lookfor <- sprintf('{"RFID":true, "Wt":true, "datetime":true, "Location":true, "_id":false}')
+    lookfor <- sprintf('{"RFID":true, "Wt":true, "datetime":true, "_id":false}')
 
     data <- wowdata$find(query = filter, fields = lookfor)
 
     if(nrow(data) !=0){
     data <- data%>%
-      mutate(datetime = as.POSIXct(strptime(datetime, format = "%Y-%m-%d %H:%M:%S", tz = timezone)))%>%
-      rename(Weight = "Wt", Datetime = "datetime")%>%
-      select("RFID", "Weight", "Datetime", "Location")}
-    }
+      mutate(datetime = as.POSIXct(strptime(datetime, format = "%Y-%m-%d %H:%M:%S", tz = timezone)),
+             datetime = as.character(datetime, format = "%Y-%m-%d %H:%M:%S"),
+             Wt = round(as.numeric(Wt),0))%>%
+      rename(Weight = "Wt", Datetime = "datetime")
+    }}
 
   return(data)
 
