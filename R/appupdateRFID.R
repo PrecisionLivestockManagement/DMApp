@@ -3,23 +3,18 @@
 #' This function allows cattle RFID numbers to be updated in the DataMuster database via the DataMuster website app
 #' @name  appupdateRFID
 #' @param RFID a list of the previous cattle RFID numbers
+#' @param MTag a list of cattle management tag numbers
 #' @param newRFID a list of the new cattle RFID numbers
 #' @param date the date that the new RFID tag was applied, in date format. Default is today's date.
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a message that indicates whether or not the RFID tag number has been successfully updated
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @import dplyr
 #' @export
 
-appupdateRFID <- function(RFID, newRFID, date, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-    username = keyring::key_list("DMMongoDB")[1,2]
-    password =  keyring::key_get("DMMongoDB", username)
-  }
+appupdateRFID <- function(RFID, MTag, newRFID, date, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
@@ -38,10 +33,11 @@ appupdateRFID <- function(RFID, newRFID, date, username=NULL, password=NULL){
 
     stop("One or more of the new RFID numbers are already registered in the database. Please check that the RFID numbers are correct and try again")}
 
-
   for (i in 1:length(RFID)){
 
-   RFIDS <- sprintf('{"RFID":"%s"}', RFID[i])
+    if(RFID[i] != "xxx xxxxxxxxxxxx"){
+      RFIDS <- sprintf('{"RFID":"%s"}', RFID[i])}else{
+        RFIDS <- sprintf('{"stationname":"%s", "properties.Management":"%s"}', property, MTag[i])}
 
           banger <- cattle$find(query = RFIDS, fields='{"RFIDhist.date":true, "_id":false}')
           arrpos <- length(banger$RFIDhist$date[[1]])

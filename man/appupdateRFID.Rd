@@ -4,16 +4,18 @@
 \alias{appupdateRFID}
 \title{Updated cattle RFID tag numbers in the DataMuster database via the DataMuster website app}
 \usage{
-appupdateRFID(RFID, newRFID, date, username = NULL, password = NULL)
+appupdateRFID(RFID, MTag, newRFID, date, username, password)
 }
 \arguments{
 \item{RFID}{a list of the previous cattle RFID numbers}
+
+\item{MTag}{a list of cattle management tag numbers}
 
 \item{newRFID}{a list of the new cattle RFID numbers}
 
 \item{date}{the date that the new RFID tag was applied, in date format. Default is today's date.}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
