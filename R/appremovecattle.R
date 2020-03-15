@@ -11,16 +11,10 @@
 #' @return a message that indicates whether or not the information has been successfully recorded
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @export
 
 
-appremovecattle <- function(RFID, MTag, property, paddock, date, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-    username = keyring::key_list("DMMongoDB")[1,2]
-    password =  keyring::key_get("DMMongoDB", username)
-    }
+appremovecattle <- function(RFID, MTag, property, paddock, date, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
