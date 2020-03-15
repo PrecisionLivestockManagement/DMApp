@@ -14,12 +14,7 @@
 #' @export
 
 
-appupdatepaddock <- function(RFID, MTag, property, paddock, date=NULL, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-    username = keyring::key_list("DMMongoDB")[1,2]
-    password =  keyring::key_get("DMMongoDB", username)
-    }
+appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
@@ -33,19 +28,6 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date=NULL, username=
   if (length(paddock) == 1){paddock <- rep(paddock, length = length(RFID))}
 
 
-  # Check that the RFID numbers are in the correct format and exist in the database
-
-  # if("TRUE" %in% (nchar(as.character(RFID))!= 16)) {
-  #   stop(paste0("One or more of the RFID numbers are not in the correct format. Please ensure all RFIDs are in the format 'xxx xxxxxxxxxxxx'"))}
-  #
-  # checkcows <- paste(unlist(RFID), collapse = '", "' )
-  #
-  # filtercattle <- sprintf('{"RFID":{"$in":["%s"]}}', checkcows)
-  # check <- cattle$count(query = filtercattle)
-  #
-  # if (check != length(RFID)) {
-  #     stop("One or more of the RFID numbers cannot be found in the database. Please check that the RFID numbers are correct and try again")}
-
   # Check that the paddocks exist in the database
 #
    checkpads <- paste(unlist(paddock), collapse = '", "' )
@@ -53,10 +35,6 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date=NULL, username=
    filterpaddock <- sprintf('{"stationname":"%s", "paddname":{"$in":["%s"]}}', property, checkpads)
 
    pad <- paddocks$find(query = filterpaddock, fields = '{"_id":true, "geometry":true, "paddname":true, "properties.hectares":true}')
-
-#     if(nrow(pad) != length(unique(paddock))) {
-#       stop('Could not find matching paddock. Please check the spelling and ensure the paddock is registered in the database')
-#     }
 
   # Check for WoW infrastructure in new paddocks
 
@@ -143,7 +121,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date=NULL, username=
           }
           }
 
-movecattle(property = property, paddock = unique(paddock), username = username, password = password)
+appmovecattle(property = property, paddock = unique(paddock), username = username, password = password)
 
 }
 

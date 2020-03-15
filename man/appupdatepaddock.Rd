@@ -4,15 +4,7 @@
 \alias{appupdatepaddock}
 \title{Update cattle allocations to paddocks}
 \usage{
-appupdatepaddock(
-  RFID,
-  MTag,
-  property,
-  paddock,
-  date = NULL,
-  username = NULL,
-  password = NULL
-)
+appupdatepaddock(RFID, MTag, property, paddock, date, username, password)
 }
 \arguments{
 \item{RFID}{a list of cattle RFID numbers}
