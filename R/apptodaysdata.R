@@ -24,9 +24,9 @@ apptodaysdata <- function(alms, timezone, start, username, password){
     alms <- sprintf('"Location":"%s",', alms)
 
       if(timezone == "Australia/Brisbane"){
-        start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
+        start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
           if(timezone == "America/Argentina/Buenos_Aires"){
-            start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
+            start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
 
     # Set up query to search for data
 
