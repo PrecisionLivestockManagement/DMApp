@@ -19,14 +19,22 @@ apptodaysdata <- function(alms, timezone, start, username, password){
 
   wowdata <- mongo(collection = "DailyWts", db = "DataMuster", url = pass, verbose = T)
 
+  start <- substr(as.character(start),1,10)
+
   if(length(alms) == 0){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
 
     alms <- sprintf('"Location":"%s",', alms)
 
       if(timezone == "Australia/Brisbane"){
-        start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
+        start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(as.character(start-1),1,10), "T14:00:00Z"))}else{
           if(timezone == "America/Argentina/Buenos_Aires"){
-            start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
+            start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(as.character(start),1,10), "T03:00:00Z"))}}
+
+    # if(timezone == "Australia/Brisbane"){
+    #   start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
+    #     if(timezone == "America/Argentina/Buenos_Aires"){
+    #       start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
+
 
     # Set up query to search for data
 
