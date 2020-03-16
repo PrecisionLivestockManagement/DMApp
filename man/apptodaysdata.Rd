@@ -4,7 +4,7 @@
 \alias{apptodaysdata}
 \title{Retrieve daily WoW data from the DataMuster database via the DataMuster website app}
 \usage{
-apptodaysdata(alms, timezone, username, password)
+apptodaysdata(alms, timezone, start, username, password)
 }
 \arguments{
 \item{alms}{the name of the alms unit}

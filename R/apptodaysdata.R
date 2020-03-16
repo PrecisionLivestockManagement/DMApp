@@ -13,17 +13,15 @@
 #' @export
 
 
-apptodaysdata <- function(alms, timezone, username, password){
+apptodaysdata <- function(alms, timezone, start, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
   wowdata <- mongo(collection = "DailyWts", db = "DataMuster", url = pass, verbose = T)
 
-  if(length(alms) == 0){data <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
+  if(length(alms) == 0){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
 
     alms <- sprintf('"Location":"%s",', alms)
-
-    start <- Sys.Date()
 
       if(timezone == "Australia/Brisbane"){
         start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
@@ -40,15 +38,26 @@ apptodaysdata <- function(alms, timezone, username, password){
 
     data <- wowdata$find(query = filter, fields = lookfor)
 
-    if(nrow(data) !=0){
-    data <- data%>%
-      mutate(datetime = as.POSIXct(strptime(datetime, format = "%Y-%m-%d %H:%M:%S", tz = timezone)),
+    dataf <- data
+
+    collist <- colnames(dataf)
+
+    if(nrow(dataf) != 0){
+      for(i in 1:length(collist)){
+        if("POSIXt" %in% class(dataf[,i])){
+          attributes(dataf[,i])$tzone <- timezone}}
+    }
+
+    if(nrow(dataf) == 0){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
+    dataf <- dataf%>%
+      mutate(#datetime = as.POSIXct(strptime(datetime, format = "%Y-%m-%d %H:%M:%S", tz = timezone)),
              datetime = as.character(datetime, format = "%Y-%m-%d %H:%M:%S"),
              Wt = round(as.numeric(Wt),0))%>%
       rename(Weight = "Wt", Datetime = "datetime")
-    }}
+    }
+    }
 
-  return(data)
+  return(dataf)
 
 }
 
