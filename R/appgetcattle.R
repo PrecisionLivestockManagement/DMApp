@@ -13,32 +13,35 @@
 #' @export
 
 
-appgetcattle <- function(property, timezone, username, password){
+appgetcattle <- function(property, sex, category, paddock, zoom, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
 
-  filter <- sprintf('{"stationname":"%s"}', property)
-  #lookfor <- sprintf('{"stationname":true, "RFID":true, "properties.Management":true, "geometry":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true, "properties.stweight":true, "properties.stwtdate":true, "properties.weight":true, "properties.recordedtime":true, "properties.wkweight":true, "properties.wkwtdate":true, "properties.ALMS":true, "_id":false}')
+  property <- sprintf('"stationname":"%s",', property)
+  if(sex == "all"){sex <- NULL} else {sex <- sprintf('"properties.sex":"%s",', sex)}
+  if(category == "all"){category <- NULL} else {category <- sprintf('"properties.category":"%s",', category)}
+  if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
+
+  # Set up query to search for cattle
+
+  filter <- paste0("{", property, sex, category, paddock,"}")
+  filter <- substr(filter, 1 , nchar(filter)-2)
+  filter <- paste0(filter, "}")
+
   lookfor <- sprintf('{"RFID":true, "geometry":true, "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
   if(nrow(cattleinfo) == 0){
-    cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)
-    }
+    cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)}
 
   cattleinfo <- cattleinfo%>%
-                mutate(geom = geometry$coordinates)%>%
-                mutate_at(vars(ends_with("date")), as.Date, tz = timezone)
+                mutate(geom = geometry$coordinates)
 
-  #cattleinfo <- cbind(cattleinfo[-c(1,2)], cattleinfo$properties)
   cattleinfo <- cattleinfo[-1]
 
   cattleinfospatial <- SpatialPointsDataFrame(data.frame(matrix(unlist(cattleinfo$geom), nrow=length(cattleinfo$geom), byrow=T)), cattleinfo%>%select(-"geom"))
-
-  #cattleinfospatial <- cattleinfospatial%>%
-  #                     rename(property = stationname)
 
   return(cattleinfospatial)
 
