@@ -4,7 +4,7 @@
 \alias{appgetcattle}
 \title{Retrieves cattle from the DataMuster database}
 \usage{
-appgetcattle(property, timezone, username, password)
+appgetcattle(property, sex, category, paddock, zoom, username, password)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
