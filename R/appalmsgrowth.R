@@ -72,8 +72,6 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
                      summarise(Number = n())%>%
                      filter(Number == max(Number))
 
-      #attributes(cattleweights$avweight)$tzone <- timezone
-
       cattleweights <- weights%>%
                        filter(RFID %in% cattleRFIDs$RFID)%>%
                        mutate(Date = as.Date(Date, tz = timezone))%>%

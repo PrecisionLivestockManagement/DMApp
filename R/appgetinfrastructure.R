@@ -1,6 +1,6 @@
 #' Retrieves infrastructure from the DataMuster database
 #'
-#' This function provides a list of ALMS infrastructure for a property
+#' This function retreives a list of ALMS infrastructure for a property for configuration of the DataMuster website
 #' @name  appgetinfrastructure
 #' @param property the name of the property to search the database
 #' @param username a username to access the DataMuster database

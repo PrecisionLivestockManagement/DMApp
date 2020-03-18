@@ -17,7 +17,7 @@ appgetpaddocks(property, username, password)
 a spatialpolygonsdataframe with a list of the paddock names and associated polygon coordinates
 }
 \description{
-This function allows a list of paddock polygons to be retreived from the DataMuster database via the DataMuster website
+This function retrieves a list of paddock polygons for display on the property map on the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

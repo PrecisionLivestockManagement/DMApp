@@ -2,7 +2,7 @@
 % Please edit documentation in R/apptsisessionupload.R
 \name{apptsisessionupload}
 \alias{apptsisessionupload}
-\title{Upload Gallagher TSi session data to the DataMuster database}
+\title{Upload Gallagher TSi session data to the 'apptsi' collection in the DataMuster DMIoT database}
 \usage{
 apptsisessionupload(
   Tag,
@@ -14,8 +14,8 @@ apptsisessionupload(
   pdkfrom = NULL,
   pdkto = NULL,
   notes = NULL,
-  username = NULL,
-  password = NULL
+  username,
+  password
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ apptsisessionupload(
 
 \item{notes}{observations made by the stationhand as a character entry}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
@@ -45,7 +45,7 @@ apptsisessionupload(
 a message that indicates whether or not the data has been successfully uploaded
 }
 \description{
-This function allows Gallagher TSi session data to be uploaded to the DataMuster database via the DataMuster website
+This function uploads Gallagher TSi session data to the DataMuster database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

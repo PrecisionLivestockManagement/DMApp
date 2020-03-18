@@ -1,16 +1,17 @@
 #' Update cattle allocations to paddocks
 #'
-#' This function allows individuals or groups of cattle to be allocated to paddocks in the DataMuster database via the DataMuster website app
+#' This function allows individuals or groups of cattle to be allocated to paddocks in the DataMuster database via the DataMuster website
 #' @name appupdatepaddock
 #' @param RFID a list of cattle RFID numbers
+#' @param MTag a list of cattle management tag numbers
 #' @param property the name of the property that the cattle belong
+#' @param paddock the name of the paddock that the cattle belong
 #' @param date the date that the cattle were moved in date format, the default is today's date
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a message that indicates whether or not the information has been successfully updated
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @export
 
 

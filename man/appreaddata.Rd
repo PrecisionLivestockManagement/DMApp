@@ -2,22 +2,26 @@
 % Please edit documentation in R/appreaddata.R
 \name{appreaddata}
 \alias{appreaddata}
-\title{Retrieves paddock information from the DataMuster database}
+\title{Read a datafile from the DataMuster database}
 \usage{
 appreaddata(property, filepath, filetype, username, password)
 }
 \arguments{
-\item{property}{the name of the property to search the database}
+\item{property}{the name of the property of the registered user}
+
+\item{filepath}{the path of the file to be read, determined by navigation by the user to the file after selecting the 'Browse' button}
+
+\item{filetype}{the type of file to be read, "DataMuster WoW (.txt)", "DataMuster EID (.txt)", "Gallagher TSi Session Data (.csv)" or "Calving Data (.csv)"}
 
 \item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a spatialpolygonsdataframe with a list of the paddock names and associated polygon coordinates
+a dataframe containing the data from the file
 }
 \description{
-This function allows a list of paddock polygons to be retreived from the DataMuster database via the DataMuster website
+This function reads cattle data from a file and prepares the data for table display on the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

@@ -1,6 +1,6 @@
 #' Upload DataMuster EID data to the DataMuster database
 #'
-#' This function allows DataMuster EID data to be uploaded via the DataMuster website
+#' This function allows DataMuster EID data to be uploaded to the 'appwow' collection in the DataMuster DMIoT database via the DataMuster website
 #' @name appeidupload
 #' @param RFID a list of the cattle RFID numbers
 #' @param datetime a list of timestamp data in POSIXct format
@@ -10,16 +10,10 @@
 #' @return a message that indicates whether or not the data has been successfully uploaded
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @export
 
 
-appeidupload <- function(RFID, datetime, ALMS, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-    username = keyring::key_list("DMMongoDB")[1,2]
-    password =  keyring::key_get("DMMongoDB", username)
-  }
+appeidupload <- function(RFID, datetime, ALMS, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   wowdata <- mongo(collection = "appwow", db = "DMIoT", url = pass, verbose = T)

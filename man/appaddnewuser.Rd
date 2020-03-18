@@ -2,7 +2,7 @@
 % Please edit documentation in R/appaddnewuser.R
 \name{appaddnewuser}
 \alias{appaddnewuser}
-\title{Add a new user to the DataMuster database}
+\title{Adds a new user to the DataMuster database}
 \usage{
 appaddnewuser(email, username, password)
 }
@@ -17,7 +17,7 @@ appaddnewuser(email, username, password)
 a message that indicates whether or not the user has been added successfully
 }
 \description{
-This function adds new users to the DataMuster database via the DataMuster website
+This function adds a new user to the DataMuster database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

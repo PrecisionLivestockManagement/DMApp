@@ -1,14 +1,16 @@
-#' Retrieve daily WoW data from the DataMuster database via the DataMuster website app
+#' Retrieves daily WoW data from the DataMuster database
 #'
-#' This function allows daily ALMS data to be retreived from the DataMuster database via the DataMuster website app
+#' This function retrieves daily ALMS data from the DataMuster for table display on the DataMuster website
 #' @name apptodaysdata
 #' @param property the name of the property to search the database
 #' @param alms the name of the alms unit
-#' @param username required for access. Please email \email{info@@datamuster.net.au} to acquire a username
-#' @param password required for access. Please email \email{info@@datamuster.net.au} to acquire a password
+#' @param start the minimum date of data to be returned
+#' @param timezone the timezone of the property to display the weight data
+#' @param username a username to access the DataMuster database
+#' @param password a password to access the DataMuster database
 #' @return a dataframe of WoW weights that have been recorded during the specified time period
-#' @author Dave Swain \email{dave.swain@@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@@datamuster.net.au}
-#' @import keyring
+#' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
+#' @import mongolite
 #' @import dplyr
 #' @export
 
@@ -19,8 +21,6 @@ apptodaysdata <- function(alms, timezone, start, username, password){
 
   wowdata <- mongo(collection = "DailyWts", db = "DataMuster", url = pass, verbose = T)
 
-  #start <- substr(as.character(start),1,10)
-
   if(length(alms) == 0){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
 
     alms <- sprintf('"Location":"%s",', alms)
@@ -29,12 +29,6 @@ apptodaysdata <- function(alms, timezone, start, username, password){
         start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(start-1,1,10), "T14:00:00Z"))}else{
           if(timezone == "America/Argentina/Buenos_Aires"){
             start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(start,1,10), "T03:00:00Z"))}}
-
-    # if(timezone == "Australia/Brisbane"){
-    #   start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
-    #     if(timezone == "America/Argentina/Buenos_Aires"){
-    #       start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(substr(start,1,10), "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
-
 
     # Set up query to search for data
 

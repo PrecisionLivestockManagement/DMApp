@@ -1,9 +1,13 @@
-#' Retrieves cattle ALMS useage information from the DataMuster database
+#' Retrieves data for the ALMS Use graph from the DataMuster database
 #'
-#' This function allows cattle ALMS use data to be retreived from the DataMuster database via the DataMuster website app
-#' @name  appalmsusegraph
+#' This function retreives daily weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
+#' @name appalmsusegraph
 #' @param property the name of the property to search the database
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param start the minimum date of data to be returned, determined by the "Period for ALMS graphs" filter
+#' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
+#' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
+#' @param alms the allocated alms unit of the cattle to be returned, determined from the "ALMS Access:" drop down selector
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a dataframe with a list of cattle and a daily visit indicator, 0 = not recorded and 1 = recorded
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}

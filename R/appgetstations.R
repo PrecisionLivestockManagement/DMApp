@@ -1,8 +1,8 @@
-#' Retreive property information from the DataMuster database
+#' Retreives property information from the DataMuster database
 #'
-#' This function retrieves property information from the DataMuster database via the DataMuster website
-#' @name  appgetstations
-#' @param property a list of property names, if NULL all active properties in the database will be returned
+#' This function retrieves property information from the DataMuster database for configuration of the DataMuster website
+#' @name appgetstations
+#' @param property a list of property names associated with the user
 #' @param accesslevel the users database accesslevel, either "admin" or "user"
 #' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database

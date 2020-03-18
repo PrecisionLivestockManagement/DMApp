@@ -1,6 +1,6 @@
 #' Retrieves user information from the DataMuster database
 #'
-#' This function retreives user information from the DataMuster database via the DataMuster website app
+#' This function retreives user information from the DataMuster database for configuration of the DataMuster website
 #' @name appgetuser
 #' @param email the email address of the registered user
 #' @param username a username to access the DataMuster database

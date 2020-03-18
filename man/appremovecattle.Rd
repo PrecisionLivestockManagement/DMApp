@@ -13,9 +13,11 @@ appremovecattle(RFID, MTag, property, paddock, date, username, password)
 
 \item{property}{the name of the property that cattle belong}
 
+\item{paddock}{the name of the paddock that the cattle belong}
+
 \item{date}{the date that the animal was removed from the property in date format, the default is today's date}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
@@ -23,7 +25,7 @@ appremovecattle(RFID, MTag, property, paddock, date, username, password)
 a message that indicates whether or not the information has been successfully recorded
 }
 \description{
-This function allows individuals or groups of cattle to be archived in the DataMuster database via the DataMuster website app
+This function allows individuals or groups of cattle to be archived in the DataMuster database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

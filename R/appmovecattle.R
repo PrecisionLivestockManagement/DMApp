@@ -1,13 +1,13 @@
-#' Update a paddock's coordinates
+#' Update cattle coordinates in the DataMuster database
 #'
-#' This function updates paddock coordinates. Inputs need to be a list of one or more property names
+#' This function updates cattle spatial coordinates, after moving or removing cattle, for display on the property map on the DataMuster website
 #' @name appmovecattle
-#' @param property the name of the property to search the DataMuster MongoDB Atlas server
-#' @param paddock the name of the paddocks to search the DataMuster MongoDB Atlas server
-#' @param username if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring
-#' @param password if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access
-#' @return a spatialpointsdataframe with a list of the RFID numbers and a number of other data points, associated management tags and current paddocks the cattle are in
-#' @author Dave Swain \email{dave.swain@@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@@datamuster.net.au}
+#' @param property the name of the property to search the database
+#' @param paddock the paddock allocation of the cattle
+#' @param username a username to access the DataMuster database
+#' @param password a password to access the DataMuster database
+#' @return a message that indicates whether or not the data has been updated successfully
+#' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @import dplyr
 #' @import rgdal
@@ -51,7 +51,6 @@ appmovecattle <- function(property, paddock, username, password){
     catman <- cat$ID[i]
 
   RFIDS <- sprintf('{"_id" : {"$oid":"%s"}}', catman)
-
 
   RFIDI <- sprintf('{"$set":{"geometry.coordinates.0":%s, "geometry.coordinates.1":%s}}', kipper[[i]][1],kipper[[i]][2])
 

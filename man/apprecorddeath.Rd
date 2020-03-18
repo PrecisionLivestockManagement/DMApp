@@ -17,12 +17,14 @@ apprecorddeath(RFID, MTag, date, cause, property, paddock, username, password)
 
 \item{property}{the name of the property that the cattle belong}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{paddock}{the name of the paddock that the cattle belong}
+
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a message that indicates whether or not information has been successfully recorded
+a message that indicates whether or not data has been successfully updated
 }
 \description{
 This function allows death information to be recorded for individuals or groups of cattle to the DataMuster database via the DataMuster website.

@@ -2,25 +2,25 @@
 % Please edit documentation in R/appmovecattle.R
 \name{appmovecattle}
 \alias{appmovecattle}
-\title{Update a paddock's coordinates}
+\title{Update cattle coordinates in the DataMuster database}
 \usage{
 appmovecattle(property, paddock, username, password)
 }
 \arguments{
-\item{property}{the name of the property to search the DataMuster MongoDB Atlas server}
+\item{property}{the name of the property to search the database}
 
-\item{paddock}{the name of the paddocks to search the DataMuster MongoDB Atlas server}
+\item{paddock}{the paddock allocation of the cattle}
 
-\item{username}{if you don't have a username set up using the dmaccess function you can pass a username, if no value added then the function looks for a value from dmaccess via keyring}
+\item{username}{a username to access the DataMuster database}
 
-\item{password}{if you include a username you will also need to add a password contact Lauren O'Connor if you don't have access}
+\item{password}{a password to access the DataMuster database}
 }
 \value{
-a spatialpointsdataframe with a list of the RFID numbers and a number of other data points, associated management tags and current paddocks the cattle are in
+a message that indicates whether or not the data has been updated successfully
 }
 \description{
-This function updates paddock coordinates. Inputs need to be a list of one or more property names
+This function updates cattle spatial coordinates, after moving or removing cattle, for display on the property map on the DataMuster website
 }
 \author{
-Dave Swain \email{dave.swain@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@datamuster.net.au}
+Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
 }

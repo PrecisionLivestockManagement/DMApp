@@ -2,16 +2,20 @@
 % Please edit documentation in R/apptodaysdata.R
 \name{apptodaysdata}
 \alias{apptodaysdata}
-\title{Retrieve daily WoW data from the DataMuster database via the DataMuster website app}
+\title{Retrieves daily WoW data from the DataMuster database}
 \usage{
 apptodaysdata(alms, timezone, start, username, password)
 }
 \arguments{
 \item{alms}{the name of the alms unit}
 
-\item{username}{required for access. Please email \email{info@datamuster.net.au} to acquire a username}
+\item{timezone}{the timezone of the property to display the weight data}
 
-\item{password}{required for access. Please email \email{info@datamuster.net.au} to acquire a password}
+\item{start}{the minimum date of data to be returned}
+
+\item{username}{a username to access the DataMuster database}
+
+\item{password}{a password to access the DataMuster database}
 
 \item{property}{the name of the property to search the database}
 }
@@ -19,8 +23,8 @@ apptodaysdata(alms, timezone, start, username, password)
 a dataframe of WoW weights that have been recorded during the specified time period
 }
 \description{
-This function allows daily ALMS data to be retreived from the DataMuster database via the DataMuster website app
+This function retrieves daily ALMS data from the DataMuster for table display on the DataMuster website
 }
 \author{
-Dave Swain \email{dave.swain@datamuster.net.au} and Lauren O'Connor \email{lauren.oconnor@datamuster.net.au}
+Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
 }

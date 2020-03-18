@@ -1,6 +1,6 @@
 #' Retrieves paddock information from the DataMuster database
 #'
-#' This function allows a list of paddock polygons to be retreived from the DataMuster database via the DataMuster website
+#' This function retrieves a list of paddock polygons for display on the property map on the DataMuster website
 #' @name appgetpaddocks
 #' @param property the name of the property to search the database
 #' @param username a username to access the DataMuster database
@@ -8,7 +8,6 @@
 #' @return a spatialpolygonsdataframe with a list of the paddock names and associated polygon coordinates
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @import dplyr
 #' @import sp
 #' @export

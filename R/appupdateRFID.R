@@ -1,7 +1,7 @@
-#' Updated cattle RFID tag numbers in the DataMuster database via the DataMuster website app
+#' Updates cattle RFID tag numbers in the DataMuster database
 #'
-#' This function allows cattle RFID numbers to be updated in the DataMuster database via the DataMuster website app
-#' @name  appupdateRFID
+#' This function allows cattle RFID numbers to be updated in the DataMuster database via the DataMuster website
+#' @name appupdateRFID
 #' @param RFID a list of the previous cattle RFID numbers
 #' @param MTag a list of cattle management tag numbers
 #' @param newRFID a list of the new cattle RFID numbers

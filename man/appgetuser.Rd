@@ -17,7 +17,7 @@ appgetuser(email, username, password)
 a dataframe showing the users database accesslevel, writeaccess and list of stations
 }
 \description{
-This function retreives user information from the DataMuster database via the DataMuster website app
+This function retreives user information from the DataMuster database for configuration of the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

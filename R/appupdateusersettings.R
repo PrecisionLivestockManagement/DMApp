@@ -1,23 +1,19 @@
-#' Retrieves user settings from the DataMuster database
+#' Updates user settings in the DataMuster database
 #'
-#' This function allows user settings to be retreived from the DataMuster database via the DataMuster website app
+#' This function allows user settings to be updated from the DataMuster database via the DataMuster website
 #' @name appupdateusersettings
 #' @param email the email address of the registered user
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param language the last language selected by the user, detemined by the selected "Language Options:" button
+#' @param lastprop the last property selected by the user, detemined by the selected "Property Choice:" dropdown list
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
-#' @return a dataframe showing the information associated with the user settings
+#' @return a message that indicates whether or not the information has been successfully updated
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @export
 
 
-appupdateusersettings <- function(email, language = NULL, lastprop = NULL, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-  username = keyring::key_list("DMMongoDB")[1,2]
-  password =  keyring::key_get("DMMongoDB", username)
-}
+appupdateusersettings <- function(email, language, lastprop, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   usersettings <- mongo(collection = "UserSettings", db = "DataMuster", url = pass, verbose = T)

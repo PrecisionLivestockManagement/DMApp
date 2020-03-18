@@ -2,28 +2,26 @@
 % Please edit documentation in R/appupdateusersettings.R
 \name{appupdateusersettings}
 \alias{appupdateusersettings}
-\title{Retrieves user settings from the DataMuster database}
+\title{Updates user settings in the DataMuster database}
 \usage{
-appupdateusersettings(
-  email,
-  language = NULL,
-  lastprop = NULL,
-  username = NULL,
-  password = NULL
-)
+appupdateusersettings(email, language, lastprop, username, password)
 }
 \arguments{
 \item{email}{the email address of the registered user}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{language}{the last language selected by the user, detemined by the selected "Language Options:" button}
+
+\item{lastprop}{the last property selected by the user, detemined by the selected "Property Choice:" dropdown list}
+
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a dataframe showing the information associated with the user settings
+a message that indicates whether or not the information has been successfully updated
 }
 \description{
-This function allows user settings to be retreived from the DataMuster database via the DataMuster website app
+This function allows user settings to be updated from the DataMuster database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

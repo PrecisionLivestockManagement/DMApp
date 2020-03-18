@@ -17,8 +17,8 @@ appcalvingupload(
   comment,
   paddock,
   property,
-  username = NULL,
-  password = NULL
+  username,
+  password
 )
 }
 \arguments{
@@ -46,7 +46,7 @@ appcalvingupload(
 
 \item{property}{the name of the property}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
@@ -54,7 +54,7 @@ appcalvingupload(
 a message that indicates whether or not the data has been successfully uploaded
 }
 \description{
-This function allows calving data to be uploaded via the DataMuster website
+This function allows calving data to be uploaded to the 'appcalving' collection in the DataMuster DMIoT database via the DataMuster website
 }
 \author{
 Dave Swain \email{dave.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

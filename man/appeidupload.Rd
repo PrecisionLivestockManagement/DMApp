@@ -4,7 +4,7 @@
 \alias{appeidupload}
 \title{Upload DataMuster EID data to the DataMuster database}
 \usage{
-appeidupload(RFID, datetime, ALMS, username = NULL, password = NULL)
+appeidupload(RFID, datetime, ALMS, username, password)
 }
 \arguments{
 \item{RFID}{a list of the cattle RFID numbers}
@@ -21,7 +21,7 @@ appeidupload(RFID, datetime, ALMS, username = NULL, password = NULL)
 a message that indicates whether or not the data has been successfully uploaded
 }
 \description{
-This function allows DataMuster EID data to be uploaded via the DataMuster website
+This function allows DataMuster EID data to be uploaded to the 'appwow' collection in the DataMuster DMIoT database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

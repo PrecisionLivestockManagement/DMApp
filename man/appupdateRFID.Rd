@@ -2,7 +2,7 @@
 % Please edit documentation in R/appupdateRFID.R
 \name{appupdateRFID}
 \alias{appupdateRFID}
-\title{Updated cattle RFID tag numbers in the DataMuster database via the DataMuster website app}
+\title{Updates cattle RFID tag numbers in the DataMuster database}
 \usage{
 appupdateRFID(RFID, MTag, newRFID, date, username, password)
 }
@@ -23,7 +23,7 @@ appupdateRFID(RFID, MTag, newRFID, date, username, password)
 a message that indicates whether or not the RFID tag number has been successfully updated
 }
 \description{
-This function allows cattle RFID numbers to be updated in the DataMuster database via the DataMuster website app
+This function allows cattle RFID numbers to be updated in the DataMuster database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

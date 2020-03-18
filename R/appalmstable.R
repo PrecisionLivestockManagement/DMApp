@@ -40,8 +40,7 @@ appalmstable <- function(property, sex, category, paddock, zoom, timezone, usern
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
   if(nrow(cattleinfo) == 0){
-    cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)
-  }
+    cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)}
 
   cattleinfo <- cbind(cattleinfo[-1], cattleinfo$properties)
 

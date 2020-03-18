@@ -1,6 +1,6 @@
-#' Add a new user to the DataMuster database
+#' Adds a new user to the DataMuster database
 #'
-#' This function adds new users to the DataMuster database via the DataMuster website
+#' This function adds a new user to the DataMuster database via the DataMuster website
 #' @name appaddnewuser
 #' @param email the email address of the user
 #' @param username a username to access the DataMuster database

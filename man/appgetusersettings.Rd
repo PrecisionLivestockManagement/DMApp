@@ -17,7 +17,7 @@ appgetusersettings(email, username, password)
 a dataframe showing the users last used language and property
 }
 \description{
-This function retreives user website settings from the DataMuster database via the DataMuster website app
+This function retreives user website settings from the DataMuster database for configuration of the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

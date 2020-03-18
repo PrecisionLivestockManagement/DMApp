@@ -17,7 +17,7 @@ appgetinfrastructure(property, username, password)
 a dataframe of infrastructure and associated information
 }
 \description{
-This function provides a list of ALMS infrastructure for a property
+This function retreives a list of ALMS infrastructure for a property for configuration of the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

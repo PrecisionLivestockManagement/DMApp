@@ -7,9 +7,10 @@
 #' @param date the date that the animal died in date format, the default is today's date
 #' @param cause the cause of death
 #' @param property the name of the property that the cattle belong
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param paddock the name of the paddock that the cattle belong
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
-#' @return a message that indicates whether or not information has been successfully recorded
+#' @return a message that indicates whether or not data has been successfully updated
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @export
@@ -39,7 +40,6 @@ apprecorddeath <- function(RFID, MTag, date, cause, property, paddock, username,
 
     cattle$update(IDS, IDL) # Have to do this one first before stationname changes to "xxxxxx
     cattle$update(IDS, IDI)
-
 
     }
 

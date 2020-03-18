@@ -9,15 +9,23 @@ appgetcattle(property, sex, category, paddock, zoom, username, password)
 \arguments{
 \item{property}{the name of the property to search the database}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{sex}{the sex of the cattle to be returned, determined by the "Males or Females" filter}
+
+\item{category}{the category of cattle to be returned, determined by the "Breeders or Growers" filter}
+
+\item{paddock}{the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map}
+
+\item{zoom}{indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter}
+
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a spatialpointsdataframe with a list of cattle RFID numbers, management tags, category and sex information, current paddock allocations and weight data
+a spatialpointsdataframe with a list of cattle RFID numbers and associated coordinates
 }
 \description{
-This function provides a list of cattle for a property. If you need assistance please email \email{info@datamuster.net.au} to seek help or suggest improvements.
+This function retreives a list of cattle, their paddock allocations and spatial coordinates for display on the property map on the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

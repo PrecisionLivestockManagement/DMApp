@@ -2,12 +2,12 @@
 % Please edit documentation in R/appgetstations.R
 \name{appgetstations}
 \alias{appgetstations}
-\title{Retreive property information from the DataMuster database}
+\title{Retreives property information from the DataMuster database}
 \usage{
 appgetstations(property, accesslevel, username, password)
 }
 \arguments{
-\item{property}{a list of property names, if NULL all active properties in the database will be returned}
+\item{property}{a list of property names associated with the user}
 
 \item{accesslevel}{the users database accesslevel, either "admin" or "user"}
 
@@ -19,7 +19,7 @@ appgetstations(property, accesslevel, username, password)
 a dataframe showing property names and timezone
 }
 \description{
-This function retrieves property information from the DataMuster database via the DataMuster website
+This function retrieves property information from the DataMuster database for configuration of the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

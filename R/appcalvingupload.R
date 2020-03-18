@@ -1,6 +1,6 @@
 #' Upload calving data to the DataMuster database
 #'
-#' This function allows calving data to be uploaded via the DataMuster website
+#' This function allows calving data to be uploaded to the 'appcalving' collection in the DataMuster DMIoT database via the DataMuster website
 #' @name appcalvingupload
 #' @param date a list of the calving dates in date format
 #' @param calfID a list of calf management tag number/s
@@ -14,21 +14,15 @@
 #' @param comment observations made by the stationhand as a character entry
 #' @param paddock the name of the calving paddock
 #' @param property the name of the property
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a message that indicates whether or not the data has been successfully uploaded
 #' @author Dave Swain \email{dave.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @export
 
 
-appcalvingupload <- function(calfID, cowID, date, weight, sex, brand, udder, frontteats, rearteats, comment, paddock, property, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-    username = keyring::key_list("DMMongoDB")[1,2]
-    password =  keyring::key_get("DMMongoDB", username)
-  }
+appcalvingupload <- function(calfID, cowID, date, weight, sex, brand, udder, frontteats, rearteats, comment, paddock, property, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)

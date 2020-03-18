@@ -1,6 +1,6 @@
-#' Upload Gallagher TSi session data to the DataMuster database
+#' Upload Gallagher TSi session data to the 'apptsi' collection in the DataMuster DMIoT database
 #'
-#' This function allows Gallagher TSi session data to be uploaded to the DataMuster database via the DataMuster website
+#' This function uploads Gallagher TSi session data to the DataMuster database via the DataMuster website
 #' @name apptsisessionupload
 #' @param Tag a list of cattle management tag numbers
 #' @param EID a list of cattle RFID numbers
@@ -11,7 +11,7 @@
 #' @param pdkfrom a list of paddock names that the cattle have moved from
 #' @param pdkto a list of paddock names that the cattle have moved to
 #' @param notes observations made by the stationhand as a character entry
-#' @param username a username to access the DataMuster database, contact Lauren O'Connor for database access
+#' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a message that indicates whether or not the data has been successfully uploaded
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
@@ -19,12 +19,7 @@
 #' @export
 
 
-apptsisessionupload <- function(Tag, EID, date, liveweight, property, NLIS=NULL, pdkfrom=NULL, pdkto=NULL, notes=NULL, username=NULL, password=NULL){
-
-  if(is.null(username)||is.null(password)){
-    username = keyring::key_list("DMMongoDB")[1,2]
-    password =  keyring::key_get("DMMongoDB", username)
-  }
+apptsisessionupload <- function(Tag, EID, date, liveweight, property, NLIS=NULL, pdkfrom=NULL, pdkto=NULL, notes=NULL, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   tsidata <- mongo(collection = "apptsi", db = "DMIoT", url = pass, verbose = T)

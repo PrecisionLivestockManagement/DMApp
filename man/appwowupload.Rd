@@ -4,7 +4,7 @@
 \alias{appwowupload}
 \title{Upload DataMuster WoW data to the DataMuster database}
 \usage{
-appwowupload(RFID, datetime, weight, ALMS, username = NULL, password = NULL)
+appwowupload(RFID, datetime, weight, ALMS, username, password)
 }
 \arguments{
 \item{RFID}{a list of the cattle RFID numbers}
@@ -15,7 +15,7 @@ appwowupload(RFID, datetime, weight, ALMS, username = NULL, password = NULL)
 
 \item{ALMS}{a list of ALMS identification codes as character entries}
 
-\item{username}{a username to access the DataMuster database, contact Lauren O'Connor for database access}
+\item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
 }
@@ -23,7 +23,7 @@ appwowupload(RFID, datetime, weight, ALMS, username = NULL, password = NULL)
 a message that indicates whether or not the data has been successfully uploaded
 }
 \description{
-This function allows DataMuster WoW data to be uploaded to the DataMuster database via the DataMuster website app
+This function allows DataMuster WoW data to be uploaded to the 'appwow' collection in the DataMuster DMIoT database via the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}
