@@ -51,7 +51,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
 
     RFIDS <- sprintf('{"stationname":"%s", "properties.Management":"%s"}', property, MTag[i])}
 
-          banger <- cattle$find(query= RFIDS, fields='{"properties.Paddock":true,"properties.ALMS":true,"properties.ALMSID":true,"pdkhist.dateIN":true, "pdkhist.dateOUT":true, "almshist.dateON":true, "almshist.dateOFF":true, "_id":false}')
+          banger <- cattle$find(query= RFIDS, fields='{"properties.Paddock":true,"properties.ALMS":true, "properties.ALMSID":true,"properties.ALMSasset_id":true,"pdkhist.dateIN":true, "pdkhist.dateOUT":true, "almshist.dateON":true, "almshist.dateOFF":true, "_id":false}')
           arrpos <- length(banger$pdkhist$dateIN[[1]])
           arrpos1 <- length(banger$pdkhist$dateOUT[[1]])
 
@@ -95,31 +95,33 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
 
           if (ALMS == "TRUE" && inf$properties$datarecording == "TRUE"){
 
-            WOW <- inf[which(inf$paddock[[1]] == paddock[i]),]
+            WOW <- inf[which(paddock[i] %in% inf$paddock[[1]]),]
 
             IDIlast <- sprintf('{"$set":{"properties.ALMS":"%s", "properties.ALMSID":"%s", "properties.ALMSasset_id":"%s"}}',
                              "TRUE", WOW$`_id`, WOW$properties$asset_id)
 
-            # If the animal is currently allocated to an ALMS unit...
+            # If the animal is currently allocated to a different ALMS unit...
 
-            if (banger$properties$ALMS == "TRUE"){
+            if (banger$properties$ALMS == "TRUE" && WOW$properties$asset_id != banger$properties$ALMSasset_id){
 
               IDI <- sprintf('{"$set":{"almshist.dateON.%s":{"$date":"%s"}, "almshist.dateOFF.%s":{"$date":"%s"}, "almshist.ID.%s":"%s", "almshist.asset_id.%s":"%s"}}',
-                             arrpos2, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos3, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos2, WOW$`_id`, arrpos2, WOW$properties$asset_id)}
+                             arrpos2, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos3, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos2, WOW$`_id`, arrpos2, WOW$properties$asset_id)
+
+              cattle$update(RFIDS, IDIlast)
+              cattle$update(RFIDS, IDI)}
 
             # If the animal is not currently allocated to an ALMS unit...
 
             if (banger$properties$ALMS == "FALSE"){
 
               IDI <- sprintf('{"$set":{"almshist.dateON.%s":{"$date":"%s"}, "almshist.ID.%s":"%s", "almshist.asset_id.%s":"%s"}}',
-                             arrpos2, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos2, WOW$`_id`, arrpos2, WOW$properties$asset_id)}
+                             arrpos2, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos2, WOW$`_id`, arrpos2, WOW$properties$asset_id)
 
           cattle$update(RFIDS, IDIlast)
-          cattle$update(RFIDS, IDI)
+          cattle$update(RFIDS, IDI)}
+          }
           }
 
-
-          }
           }
 
 appmovecattle(property = property, paddock = unique(paddock), username = username, password = password)
