@@ -65,8 +65,8 @@ appweightstable <- function(property, sex, category, paddock, zoom, timezone, us
                         recordedtime = round(as.numeric(difftime(s, recordedtime, units = "hours")),0),
                         recordedtime = ifelse(recordedtime > 1000, NA, recordedtime))%>%
                  rename("Tag" = Management, "Sex" = sex, "Category" = category, "Hours since last ALMS record" = recordedtime,
-                       "Last Average ALMS Weight Date" = wkwtdate, "ALMS Weight (kg)" = wkweight, "Last Crush Weight Date" = stwtdate, "Crush Weight (kg)" = stweight)%>%
-                 select(RFID, Tag, Sex, Category, Paddock, `Hours since last ALMS record`, `Last Average ALMS Weight Date`, `ALMS Weight (kg)`, `Last Crush Weight Date`, `Crush Weight (kg)`)%>%
+                       "ALMS Weight Date" = wkwtdate, "Last Average ALMS Weight (kg)" = wkweight, "Crush Weight Date" = stwtdate, "Last Crush Weight (kg)" = stweight)%>%
+                 select(RFID, Tag, Sex, Category, Paddock, `Hours since last ALMS record`, `Last Average ALMS Weight (kg)`, `ALMS Weight Date`, `Last Crush Weight (kg)`, `Crush Weight Date`)%>%
                  filter(RFID != "xxxxxx")
 
   return(cattleinfof)
