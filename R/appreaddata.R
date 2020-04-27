@@ -11,6 +11,7 @@
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @import dplyr
+#' @import jsonlite
 #' @export
 
 
@@ -22,27 +23,31 @@ appreaddata <- function(property, filepath, filetype, username, password){
 
   if(filetype == "DataMuster WoW (.txt)"){
 
-    df <- try(read.csv(filepath, header=FALSE, strip.white=TRUE, stringsAsFactors = F), silent = TRUE)
+    df <- try(read.csv(filepath, sep = ";", header = F, stringsAsFactors = F, quote = ""), silent = TRUE)
+
+    df <- lapply(df$V1, function(x) fromJSON(x))
+
+    df <- bind_rows(df)
 
     if(nrow(df) == 0 || ncol(df) != 4){df <- fileerrormessage}else{
 
     df <- df%>%
-          mutate(V1 = as.character(V1),
-                 V1 = ifelse(is.na(V1), "", V1))%>%
-          rename(RFID = "V1", Weight = "V2", Datetime = "V3", ALMS = "V4")}
+          mutate(RFID = as.character(RFID),
+                 RFID = ifelse(is.na(RFID), "", RFID))%>%
+          rename(Weight = "Wt", Datetime = "datetime", ALMS = "Location")}
     }
 
-  if(filetype == "DataMuster EID (.txt)"){
-
-    df <- try(read.csv(filepath, header=FALSE, strip.white=TRUE, stringsAsFactors = F), silent = TRUE)
-
-    if(nrow(df) == 0 || ncol(df) != 3){df <- fileerrormessage}else{
-
-    df <- df%>%
-          mutate(V1 = as.character(V1),
-                 V1 = ifelse(is.na(V1), "", V1))%>%
-          rename(RFID = "V1", Datetime = "V2", ALMS = "V3")}
-    }
+  # if(filetype == "DataMuster EID (.txt)"){
+  #
+  #   df <- try(read.csv(filepath, header=FALSE, strip.white=TRUE, stringsAsFactors = F), silent = TRUE)
+  #
+  #   if(nrow(df) == 0 || ncol(df) != 3){df <- fileerrormessage}else{
+  #
+  #   df <- df%>%
+  #         mutate(V1 = as.character(V1),
+  #                V1 = ifelse(is.na(V1), "", V1))%>%
+  #         rename(RFID = "V1", Datetime = "V2", ALMS = "V3")}
+  #   }
 
   if(filetype == "Gallagher TSi Session Data (.csv)"){
 
