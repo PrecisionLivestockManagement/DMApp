@@ -53,7 +53,7 @@ appreaddata <- function(property, filepath, filetype, username, password){
 
     df <- try(read.csv(filepath, header=TRUE, stringsAsFactors = F, check.names=FALSE), silent = TRUE)
 
-    if(nrow(df) == 0 || ncol(df) >= 8){df <- fileerrormessage}else{
+    if(nrow(df) == 0 || !("Last Seen Date" %in% colnames(df))){df <- fileerrormessage}else{
 
     datepattern <- ifelse(substr(df$`Last Seen Date`[1],3,3) == "/", "%d/%m/%Y", "%Y/%m/%d")
 
