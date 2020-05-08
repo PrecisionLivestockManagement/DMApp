@@ -34,7 +34,7 @@ appgetcattlespatial <- function(property, sex, category, paddock, zoom, username
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"RFID":true, "properties.Paddock":true, "_id":false}')
+  lookfor <- sprintf('{"RFID":true, "properties.Paddock":true, "properties.AE":true,  "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
@@ -42,13 +42,15 @@ appgetcattlespatial <- function(property, sex, category, paddock, zoom, username
     cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)}
 
   cattleinfo <- cattleinfo%>%
-                mutate(Paddock = properties$Paddock)
+                mutate(Paddock = properties$Paddock,
+                       AE = properties$AE)
 
   cattleinfo <- cattleinfo[-1]
 
   countcattle <- cattleinfo %>%
                  group_by(Paddock) %>%
-                 summarise(cattle = n())
+                 summarise(cattle = n(),
+                           AE = sum(AE))
 
   paddocks1 <- DMApp::appgetpaddocks(property = property, username = username, password = password)
 
