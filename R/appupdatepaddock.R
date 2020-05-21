@@ -22,6 +22,8 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
   paddocks <- mongo(collection = "Paddocks", db = "DataMuster", url = pass, verbose = T)
   infs <- mongo(collection = "Infrastructure", db = "DataMuster", url = pass, verbose = T)
+  paddockhistory <- mongo(collection = "PaddockHistory", db = "DataMuster", url = pass, verbose = T)
+  almshistory <- mongo(collection = "ALMSHistory", db = "DataMuster", url = pass, verbose = T)
 
   if(is.null(date)){date <- Sys.Date()}else{date <- as.POSIXct(date)}
 
@@ -65,11 +67,24 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
 
           temppad <- pad[which(pad$paddname == paddock[i]),]
 
-          RFIDIlast <- sprintf('{"$set":{"properties.PaddockdateIN":{"$date":"%s"}, "properties.Paddock":"%s", "properties.PaddockID":"%s", "properties.PrevPaddock":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), paddock[i], temppad$`_id`, prevpaddock)
-          RFIDI <- sprintf('{"$set":{"pdkhist.dateOUT.%s":{"$date":"%s"}, "pdkhist.dateIN.%s":{"$date":"%s"}, "pdkhist.name.%s":"%s", "pdkhist.ID.%s":"%s"}}', arrpos1, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos, paddock[i], arrpos, temppad$`_id`)
+          RFIDIlast <- sprintf('{"$set":{"properties.PaddockdateIN":{"$date":"%s"}, "properties.Paddock":"%s", "properties.PaddockID":"%s", "properties.PrevPaddock":"%s"}}',
+                               paste0(substr(date[i],1,10),"T","00:00:00","+1000"), paddock[i], temppad$`_id`, prevpaddock)
+          RFIDI <- sprintf('{"$set":{"pdkhist.dateOUT.%s":{"$date":"%s"}, "pdkhist.dateIN.%s":{"$date":"%s"}, "pdkhist.name.%s":"%s", "pdkhist.ID.%s":"%s"}}',
+                           arrpos1, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos, paddock[i], arrpos, temppad$`_id`)
 
       cattle$update(RFIDS, RFIDI)
       cattle$update(RFIDS, RFIDIlast)
+
+      # Update PaddockHistory collection
+      padhist <- appgetpaddockhistory(RFID = RFID[i], MTag = MTag[i], property = property, currentPaddock = "TRUE", username = username, password = password)
+      IDII <- sprintf('{"_id":{"$oid":"%s"}}', padhist$`_id`)
+      IDSI <- sprintf('{"$set":{"dateOUT":{"$date":"%s"}, "currentPaddock":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), "FALSE")
+      paddockhistory$update(IDII, IDSI)
+
+      cows <- appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"))
+
+      appaddpaddockhistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, Paddock = paddock[i], currentPaddock = "TRUE",
+                         dateIN = substr(date[i],1,10), dateOUT = NULL, username = username, password = password)
 
         # Does the new paddock have an ALMS? TRUE or FALSE
 
@@ -89,6 +104,12 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
                              arrpos3, paste0(substr(date[i],1,10),"T","00:00:00","+1000"),"FALSE", "xxxxxx", "xxxxxx")
 
               cattle$update(RFIDS, IDI)
+
+              #Update ALMSHistory collection
+              almshist <- appgetalmshistory(RFID = RFID[i],  MTag = MTag[i], property = property, currentALMS = "TRUE", username = username, password = password)
+              IDII <- sprintf('{"_id":{"$oid":"%s"}}', almshist$`_id`)
+              IDSI <- sprintf('{"$set":{"dateOFF":{"$date":"%s"}, "currentALMS":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), "FALSE")
+              almshistory$update(IDII, IDSI)
               }}
 
           # If the new paddock does have an active ALMS unit..
@@ -108,7 +129,20 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
                              arrpos2, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos3, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos2, WOW$`_id`, arrpos2, WOW$properties$asset_id)
 
               cattle$update(RFIDS, IDIlast)
-              cattle$update(RFIDS, IDI)}
+              cattle$update(RFIDS, IDI)
+
+              #Update ALMSHistory collection
+              almshist <- appgetalmshistory(RFID = RFID[i],  MTag = MTag[i], property = property, currentALMS = "TRUE", username = username, password = password)
+              IDII <- sprintf('{"_id":{"$oid":"%s"}}', almshist$`_id`)
+              IDSI <- sprintf('{"$set":{"dateOFF":{"$date":"%s"}}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"))
+              almshistory$update(IDII, IDSI)
+
+              cows <- get_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"))
+
+              appaddalmshistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, ALMS = WOW$properties$asset_id, currentALMS = "TRUE",
+                              dateON = substr(date[i],1,10), dateOFF = NULL, username = username, password = password)
+
+              }
 
             # If the animal is not currently allocated to an ALMS unit...
 
@@ -118,7 +152,14 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
                              arrpos2, paste0(substr(date[i],1,10),"T","00:00:00","+1000"), arrpos2, WOW$`_id`, arrpos2, WOW$properties$asset_id)
 
           cattle$update(RFIDS, IDIlast)
-          cattle$update(RFIDS, IDI)}
+          cattle$update(RFIDS, IDI)
+
+          #Update ALMSHistory collection
+          cows <- appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"))
+
+          appaddalmshistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, ALMS = WOW$properties$asset_id, currentALMS = "TRUE",
+                          dateON = substr(date[i],1,10), dateOFF = NULL, username = username, password = password)
+          }
           }
           }
 
