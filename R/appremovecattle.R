@@ -60,7 +60,7 @@ appremovecattle <- function(RFID, MTag, property, paddock, date, username, passw
     if(banger$properties$ALMS == "TRUE"){
       almshist <- DMMongoDB::get_almshistory(RFID = banger$RFID, MTag = banger$properties$Management, property = banger$stationname, currentALMS = "TRUE", username = username, password = password)
       RFIDII <- sprintf('{"_id":{"$oid":"%s"}}', almshist$`_id`)
-      RFIDSI <- sprintf('{"$set":{"currentALMS":"%s", dateOFF":{"$date":"%s"}}}', "FALSE", paste0(substr(date,1,10),"T","00:00:00","+1000"))
+      RFIDSI <- sprintf('{"$set":{"currentALMS":"%s", "dateOFF":{"$date":"%s"}}}', "FALSE", paste0(substr(date,1,10),"T","00:00:00","+1000"))
       almshistory$update(RFIDII, RFIDSI)}
 
     cattle$update(IDS, IDI) # Have to do this one last because stationname changes to "xxxxxx"
