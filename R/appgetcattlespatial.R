@@ -50,7 +50,8 @@ appgetcattlespatial <- function(property, sex, category, paddock, zoom, username
   countcattle <- cattleinfo %>%
                  group_by(Paddock) %>%
                  summarise(cattle = n(),
-                           AE = sum(AE))
+                           AE = sum(AE)) %>%
+                 mutate(AE = round(AE, 0))
 
   paddocks1 <- DMApp::appgetpaddocks(property = property, username = username, password = password)
 
