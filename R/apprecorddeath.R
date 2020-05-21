@@ -21,6 +21,8 @@ apprecorddeath <- function(RFID, MTag, date, cause, property, paddock, username,
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
+  paddockhistory <- mongo(collection = "PaddockHistory", db = "DataMuster", url = pass, verbose = T)
+  almshistory <- mongo(collection = "ALMSHistory", db = "DataMuster", url = pass, verbose = T)
 
   for (i in 1:length(RFID)){
 
@@ -28,7 +30,8 @@ apprecorddeath <- function(RFID, MTag, date, cause, property, paddock, username,
       IDS <- sprintf('{"RFID":"%s"}', RFID[i])}else{
       IDS <- sprintf('{"stationname":"%s", "properties.Management":"%s"}', property, MTag[i])}
 
-    banger <- cattle$find(query = IDS, fields= sprintf('{"RFID":true,"pdkhist.dateOUT":true,"almshist.dateOFF":true, "_id":false}'))
+    # Update Cattle properties
+    banger <- cattle$find(query = IDS, fields = sprintf('{"RFID":true, "properties.Management":true, "stationname":true, "properties.ALMS":true, "pdkhist.dateOUT":true, "almshist.dateOFF":true, "_id":true}'))
     arrpos1 <- length(banger$pdkhist$dateOUT[[1]])
     arrpos2 <- length(banger$almshist$dateOFF[[1]])
 
@@ -36,10 +39,32 @@ apprecorddeath <- function(RFID, MTag, date, cause, property, paddock, username,
                      "properties.Paddock":"%s", "properties.PaddockID":"%s", "properties.PrevPaddock":"%s", "properties.deathcause":"%s", "properties.deathDate":{"$date":"%s"}, "properties.ALMS":"%s", "properties.ALMSID":"%s", "properties.ALMSasset_id":"%s"}}',
                      "xxxxxx", "xxxxxx", "FALSE", property, 0.0, 0.0, "xxxxxx", "xxxxxx", paddock[i], cause, paste0(date,"T","00:00:00","+1000"),"FALSE", "xxxxxx", "xxxxxx")
 
+    #Update Cattle PdkHist
     IDL <- sprintf('{"$set":{"pdkhist.dateOUT.%s":{"$date":"%s"}}}', arrpos1, paste0(date,"T","00:00:00","+1000"))
+    cattle$update(IDS, IDL)
 
-    cattle$update(IDS, IDL) # Have to do this one first before stationname changes to "xxxxxx
-    cattle$update(IDS, IDI)
+    #Update Cattle ALMSHist
+    if(banger$properties$ALMS == "TRUE"){
+      IDLI <- sprintf('{"$set":{"almshist.dateOFF.%s":{"$date":"%s"}}}', arrpos2, paste0(date,"T","00:00:00","+1000"))
+      cattle$update(IDS, IDLI)
+    }
+
+    #Update history collections
+
+    # Update PaddockHistory collection
+    padhist <- DMMongoDB::get_paddockhistory(RFID = banger$RFID, MTag = banger$properties$Management, property = banger$stationname, currentPaddock = "TRUE", username = username, password = password)
+    RFIDI <- sprintf('{"_id":{"$oid":"%s"}}', padhist$`_id`)
+    RFIDS <- sprintf('{"$set":{"currentPaddock":"%s", "dateOUT":{"$date":"%s"}}}', "FALSE", paste0(substr(date,1,10),"T","00:00:00","+1000"))
+    paddockhistory$update(RFIDI, RFIDS)
+
+    # Update ALMSHistory collection
+    if(banger$properties$ALMS == "TRUE"){
+      almshist <- DMMongoDB::get_almshistory(RFID = banger$RFID, MTag = banger$properties$Management, property = banger$stationname, currentALMS = "TRUE", username = username, password = password)
+      RFIDII <- sprintf('{"_id":{"$oid":"%s"}}', almshist$`_id`)
+      RFIDSI <- sprintf('{"$set":{"currentALMS":"%s", "dateOFF":{"$date":"%s"}}}', "FALSE", paste0(substr(date,1,10),"T","00:00:00","+1000"))
+      almshistory$update(RFIDII, RFIDSI)}
+
+    cattle$update(IDS, IDI) # Have to do this one last, stationname changes to "xxxxxx
 
     }
 
