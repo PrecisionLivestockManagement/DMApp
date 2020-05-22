@@ -155,7 +155,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
           cattle$update(RFIDS, IDI)
 
           #Update ALMSHistory collection
-          cows <- appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"))
+          cows <- appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
 
           appaddalmshistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, ALMS = WOW$properties$asset_id, currentALMS = "TRUE",
                           dateON = substr(date[i],1,10), dateOFF = NULL, username = username, password = password)
