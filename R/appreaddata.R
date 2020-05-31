@@ -60,6 +60,8 @@ appreaddata <- function(property, filepath, filetype, username, password){
     df <- df %>%
           mutate(`Live Weight (kg)` = as.character(`Live Weight (kg)`),
                  `Last Seen Date` = format(as.Date(`Last Seen Date`, datepattern), "%d/%m/%Y"))%>%
+          replace(., . == "", NA) %>%
+          filter_all(any_vars(!is.na(.))) %>%
           replace(., is.na(.), "")}
   }
 
