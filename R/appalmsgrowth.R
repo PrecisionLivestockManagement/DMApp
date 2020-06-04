@@ -9,6 +9,7 @@
 #' @param paddock the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map
 #' @param start the minimum date of data to be returned, determined by the "Period for ALMS graphs" filter
 #' @param timezone the timezone of the property to display the weekly weight data
+#' @param cattleprop the minimum number of cattle required, as a percentage
 #' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return A dataframe of summarised data showing the average weight of cattle by date and the number of cattle included in the analysis
@@ -18,7 +19,7 @@
 #' @export
 
 
-appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezone, username, password){
+appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezone, cattleprop, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
@@ -67,30 +68,46 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
 
     cattleweights <- data.frame()}else{
 
-      cattleRFIDs <- weights%>%
-                     group_by(RFID)%>%
-                     summarise(Number = n())%>%
-                     filter(Number == max(Number))
+      RFIDS <- length(unique(weights$RFID))
+
+      weeklystats <- weights%>%
+        mutate(Date = as.Date(Date, tz = timezone))%>%
+        group_by(Date)%>%
+        summarise(NumberWts = length(avweight[avweight != 0]))%>%
+        mutate(Prop = round(NumberWts/RFIDS*100,0))
+
+      dateselect <- weeklystats$Date[which(weeklystats$Prop == min(weeklystats$Prop[weeklystats$Prop >= cattleprop]))]
+
+      cattleRFIDs <- weights %>%
+        mutate(Date = as.Date(Date, tz = timezone)) %>%
+        filter(Date %in% dateselect, avweight != 0) %>%
+        select(RFID) %>%
+        group_by(RFID) %>%
+        summarise(Number = n())%>%
+        filter(Number == length(dateselect))
 
       cattleweights <- weights%>%
-                       filter(RFID %in% cattleRFIDs$RFID)%>%
-                       mutate(Date = as.Date(Date, tz = timezone))%>%
-                       group_by(Date)%>%
-                       summarise(MeanWt = mean(avweight), Number = n())%>%
-                       mutate(MeanWt = round(MeanWt, 0))
+        filter(RFID %in% cattleRFIDs$RFID)%>%
+        mutate(Date = as.Date(Date, tz = timezone))%>%
+        group_by(Date)%>%
+        summarise(MeanWt = mean(avweight[avweight != 0]), NumberWts = length(avweight[avweight != 0]))%>%
+        mutate(MeanWt = round(MeanWt, 0),
+               MeanWt = ifelse(is.nan(MeanWt), NA, MeanWt),
+               NumberWts = ifelse(NumberWts == 0, NA, NumberWts)) %>%
+        filter(NumberWts == nrow(cattleRFIDs))
 
       missingdates <- weighdays[which(!(weighdays %in% cattleweights$Date))]
-      missingdates <- missingdates[missingdates >= cattleweights$Date[1]]
+      missingdates <- missingdates[missingdates >= as.Date(cattleweights$Date[1], tz = timezone)]
 
       if(length(missingdates) >= 1){
-      for(i in 1:length(missingdates)){
-      cattleweights <- cattleweights%>%
-                       add_row(Date = missingdates[i], MeanWt = NA, Number = NA)}}
+        for(i in 1:length(missingdates)){
+          cattleweights <- cattleweights%>%
+            add_row(Date = missingdates[i], MeanWt = NA, NumberWts = NA)}}
 
-      cattleweights <- cattleweights%>%
-                       arrange(Date)%>%
-                       mutate(MeanWt = as.numeric(MeanWt),
-                              Date = as.character(as.Date(Date, tz = timezone), format = "%b %d"))
+      cattleweights <- cattleweights %>%
+        arrange(Date)%>%
+        mutate(MeanWt = as.numeric(MeanWt),
+               Date = as.character(as.Date(Date, tz = timezone), format = "%b %d"))
     }
 
   return(cattleweights)

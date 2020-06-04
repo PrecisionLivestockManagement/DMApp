@@ -12,6 +12,7 @@ appalmsgrowth(
   zoom,
   start,
   timezone,
+  cattleprop,
   username,
   password
 )
@@ -30,6 +31,8 @@ appalmsgrowth(
 \item{start}{the minimum date of data to be returned, determined by the "Period for ALMS graphs" filter}
 
 \item{timezone}{the timezone of the property to display the weekly weight data}
+
+\item{cattleprop}{the minimum number of cattle required, as a percentage}
 
 \item{username}{a username to access the DataMuster database}
 
