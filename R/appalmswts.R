@@ -72,7 +72,7 @@ appalmswts <- function(property, sex, category, paddock, zoom, start, rangewt1, 
 
       cattleweights <- weights%>%
                        mutate(Date = as.Date(Date, tz = timezone),
-                              Group = ifelse(avweight == 0, "0", ifelse(avweight > rangewt2, "1", ifelse(avweight < rangewt1, "3", "2"))))%>%
+                              Group = ifelse(avweight == 0, "zerowts", ifelse(avweight > rangewt2, "abovewt", ifelse(avweight < rangewt1, "belowwt", "withinwt"))))%>%
                        group_by(Date, Group)%>%
                        summarise(Number = n())%>%
                        ungroup()
@@ -81,14 +81,14 @@ appalmswts <- function(property, sex, category, paddock, zoom, start, rangewt1, 
                         spread(key = Group, value = Number)%>%
                         arrange(Date)
 
-      groups <- c("0","1","2","3")
+      groups <- c("zerowts","belowwt","withinwt","abovewt")
       cattleweights[setdiff(groups, names(cattleweights))] <- NA
 
       missingdates <- weighdays[which(!(weighdays %in% cattleweights$Date))]
 
       if(length(missingdates) >= 1){
-        toadd <- data.frame(Date = missingdates, `0` = rep(NA, length(missingdates)), `1` = rep(NA, length(missingdates)),
-                            `2` = rep(NA, length(missingdates)), `3` = rep(NA, length(missingdates)))
+        toadd <- data.frame(Date = missingdates, "belowwt" = rep(NA, length(missingdates)), "withinwt" = rep(NA, length(missingdates)),
+                            "zerowts" = rep(NA, length(missingdates)), "abovewt" = rep(NA, length(missingdates)))
         cattleweights <- rbind(cattleweights, toadd)}
 
       cattleweights <- cattleweights%>%
