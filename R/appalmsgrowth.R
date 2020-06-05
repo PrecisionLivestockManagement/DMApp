@@ -74,17 +74,20 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         mutate(Date = as.Date(Date, tz = timezone))%>%
         group_by(Date)%>%
         summarise(NumberWts = length(avweight[avweight != 0]))%>%
-        mutate(Prop = round(NumberWts/RFIDS*100,0))
+        mutate(Prop = round(NumberWts/RFIDS*100,0)) %>%
+        filter(Prop != 0)
 
-      dateselect <- weeklystats$Date[which(weeklystats$Prop == min(weeklystats$Prop[weeklystats$Prop >= cattleprop]))]
+      dateselect <- weeklystats%>%
+                    filter(Prop >= cattleprop)%>%
+                    filter(Prop == min(Prop))
 
       cattleRFIDs <- weights %>%
         mutate(Date = as.Date(Date, tz = timezone)) %>%
-        filter(Date %in% dateselect, avweight != 0) %>%
+        filter(Date %in% dateselect$Date, avweight != 0) %>%
         select(RFID) %>%
         group_by(RFID) %>%
         summarise(Number = n())%>%
-        filter(Number == length(dateselect))
+        filter(Number == nrow(dateselect))
 
       cattleweights <- weights%>%
         filter(RFID %in% cattleRFIDs$RFID)%>%
@@ -92,17 +95,14 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         group_by(Date)%>%
         summarise(MeanWt = mean(avweight[avweight != 0]), NumberWts = length(avweight[avweight != 0]))%>%
         mutate(MeanWt = round(MeanWt, 0),
-               MeanWt = ifelse(is.nan(MeanWt), NA, MeanWt),
                NumberWts = ifelse(NumberWts == 0, NA, NumberWts)) %>%
         filter(NumberWts == nrow(cattleRFIDs))
 
       missingdates <- weighdays[which(!(weighdays %in% cattleweights$Date))]
-      missingdates <- missingdates[missingdates >= as.Date(cattleweights$Date[1], tz = timezone)]
 
       if(length(missingdates) >= 1){
-        for(i in 1:length(missingdates)){
-          cattleweights <- cattleweights%>%
-            add_row(Date = missingdates[i], MeanWt = NA, NumberWts = NA)}}
+        toadd <- data.frame(Date = missingdates, MeanWt = rep(NA, length(missingdates)), NumberWts = rep(NA, length(missingdates)))
+        cattleweights <- rbind(cattleweights, toadd)}
 
       cattleweights <- cattleweights %>%
         arrange(Date)%>%
