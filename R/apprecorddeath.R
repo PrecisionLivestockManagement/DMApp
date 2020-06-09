@@ -52,14 +52,14 @@ apprecorddeath <- function(RFID, MTag, date, cause, property, paddock, username,
     #Update history collections
 
     # Update PaddockHistory collection
-    padhist <- DMMongoDB::get_paddockhistory(RFID = banger$RFID, MTag = banger$properties$Management, property = banger$stationname, currentPaddock = "TRUE", username = username, password = password)
+    padhist <- appgetpaddockhistory(cattle_id = banger$`_id`, currentPaddock = "TRUE", username = username, password = password)
     RFIDI <- sprintf('{"_id":{"$oid":"%s"}}', padhist$`_id`)
     RFIDS <- sprintf('{"$set":{"currentPaddock":"%s", "dateOUT":{"$date":"%s"}}}', "FALSE", paste0(substr(date,1,10),"T","00:00:00","+1000"))
     paddockhistory$update(RFIDI, RFIDS)
 
     # Update ALMSHistory collection
     if(banger$properties$ALMS == "TRUE"){
-      almshist <- DMMongoDB::get_almshistory(RFID = banger$RFID, MTag = banger$properties$Management, property = banger$stationname, currentALMS = "TRUE", username = username, password = password)
+      almshist <- appgetalmshistory(cattle_id = banger$`_id`, currentALMS = "TRUE", username = username, password = password)
       RFIDII <- sprintf('{"_id":{"$oid":"%s"}}', almshist$`_id`)
       RFIDSI <- sprintf('{"$set":{"currentALMS":"%s", "dateOFF":{"$date":"%s"}}}', "FALSE", paste0(substr(date,1,10),"T","00:00:00","+1000"))
       almshistory$update(RFIDII, RFIDSI)}
