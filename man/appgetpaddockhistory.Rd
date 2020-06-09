@@ -5,6 +5,7 @@
 \title{Retrieve Paddock historical information from the DataMuster MongoDB database.}
 \usage{
 appgetpaddockhistory(
+  cattle_id = NULL,
   RFID = NULL,
   MTag = NULL,
   property = NULL,
@@ -19,6 +20,8 @@ appgetpaddockhistory(
 )
 }
 \arguments{
+\item{cattle_id}{a list of DataMuster cattle database identification number/s}
+
 \item{RFID}{a list of cattle RFID number/s}
 
 \item{property}{the name of the property to search for}
