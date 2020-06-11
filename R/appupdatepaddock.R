@@ -165,7 +165,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
 
           }
 
-appmovecattle(property = property, paddock = unique(paddock), username = username, password = password)
+#appmovecattle(property = property, paddock = unique(paddock), username = username, password = password)
 
 }
 
