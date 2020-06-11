@@ -33,7 +33,12 @@ appmanagetable <- function(property, sex, category, paddock, zoom, username, pas
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"RFID":true, "properties.Management":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true, "_id":false}')
+  lookfor <- sprintf('{"RFID":true, "properties.Management":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true,
+                     "properties.breed":true, "properties.colour":true, "properties.brand":true, "properties.horn":true,
+                     "properties.birthDate":true, "properties.damMTag":true, "properties.sireMTag":true, "properties.rego":true,
+                     "properties.weaned":true, "properties.desexed":true, "properties.AE":true, "properties.estcalvingdate":true, "properties.calvingdate":true,
+                     "properties.foetalagedate":true, "properties.foetalage":true, "properties.entryDate":true, "properties.PaddockdateIN":true, "properties.PrevPaddock":true,
+                     "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
@@ -47,15 +52,36 @@ appmanagetable <- function(property, sex, category, paddock, zoom, username, pas
 
     for(i in 1:length(collist)){
     if("POSIXt" %in% class(cattleinfo[,i])){
-      attributes(cattleinfo[,i])$tzone <- timezone}}
+      attributes(cattleinfo[,i])$tzone <- "Australia/Brisbane"}}
 
   s <- Sys.time()
-  attr(s,"tzone") <- timezone
+  attr(s,"tzone") <- "Australia/Brisbane"
+
+  caseconvert <- function(x) {
+    x <- tolower(x)
+    substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+    x
+  }
 
   cattleinfof <- cattleinfo%>%
-                 rename("Tag" = Management, "Sex" = sex, "Category" = category)%>%
-                 select(RFID, Tag, Sex, Category, Paddock)%>%
-                 filter(RFID != "xxxxxx")
+                 mutate_at(vars(birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.character, format = "%b %d %Y") %>%
+                 replace(.  == "xxxxxx", " ") %>%
+                 replace(.  == "Jan 01 1970", " ") %>%
+                 replace(.  == "Dec 31 1969", " ") %>%
+                 mutate(sex = caseconvert(sex), category = caseconvert(category), colour = caseconvert(colour), horn = caseconvert(horn),
+                        weaned = caseconvert(weaned), desexed = caseconvert(desexed)) %>%
+                 mutate(AE = ifelse(AE == "0", "", AE),
+                        foetalage = ifelse(foetalage == "0", "", foetalage),
+                        estcalvingdate = ifelse(as.Date(estcalvingdate, format = "%b %d %Y") < paste0(substr(Sys.Date(),1,4), "-05-01"), " ", estcalvingdate)) %>%
+                 replace(is.na(.), " ") %>%
+                 filter(RFID != "xxxxxx") %>%
+                 select(RFID, Management, sex, category, Paddock, breed, colour, brand, horn, birthDate, damMTag, sireMTag, rego, weaned, desexed,
+                        AE, estcalvingdate, calvingdate, foetalagedate, foetalage, entryDate, PaddockdateIN, PrevPaddock)%>%
+                 rename("Tag" = Management, "Sex" = sex, "Category" = category, "Breed" = breed, "Colour" = colour, "Brand" = brand, "Horn status" = horn,
+                        "Date of birth" = birthDate, "Dam tag" = damMTag, "Sire tag" = sireMTag, "Registration" = rego, "Weaned" = weaned,
+                        "Desexed" = desexed, "AE rating" = AE, "Est. calving date" = estcalvingdate,
+                        "Previous calving date" = calvingdate, "Foetal age date" = foetalagedate, "Foetal age" = foetalage, "Farm entry date" = entryDate,
+                        "Paddock entry date" = PaddockdateIN, "Previous paddock" = PrevPaddock)
 
   return(cattleinfof)
 
