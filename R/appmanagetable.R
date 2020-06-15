@@ -71,7 +71,7 @@ appmanagetable <- function(property, sex, category, paddock, zoom, username, pas
                  mutate(sex = caseconvert(sex), category = caseconvert(category), colour = caseconvert(colour), horn = caseconvert(horn),
                         weaned = caseconvert(weaned), desexed = caseconvert(desexed)) %>%
                  mutate(AE = ifelse(AE == "0", "", AE),
-                        foetalage = ifelse(foetalage == "0", "", foetalage),
+                        #foetalage = ifelse(foetalage == "0", "", foetalage),
                         estcalvingdate = ifelse(as.Date(estcalvingdate, format = "%b %d %Y") < paste0(substr(Sys.Date(),1,4), "-05-01"), " ", estcalvingdate)) %>%
                  replace(is.na(.), " ") %>%
                  filter(RFID != "xxxxxx") %>%
