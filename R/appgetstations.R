@@ -18,7 +18,7 @@ appgetstations <- function(property, accesslevel, username, password){
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   station <- mongo(collection = "Stations", db = "DataMuster", url = pass, verbose = T)
 
-  lookfor <- sprintf('{"stationname":true, "timezone":true, "_id":false}')
+  lookfor <- sprintf('{"stationname":true, "timezone":true, "hectares":true, "_id":false}')
 
   if (accesslevel == "admin"){
     filter <- sprintf('{"active":"%s"}', "TRUE")}else{
@@ -28,7 +28,7 @@ appgetstations <- function(property, accesslevel, username, password){
   propertyinfo <- station$find(query = filter, fields = lookfor)
 
   propertyinfo <- propertyinfo%>%
-                  select(stationname, timezone)%>%
+                  select(stationname, timezone, hectares)%>%
                   arrange(stationname)
 
   return(propertyinfo)
