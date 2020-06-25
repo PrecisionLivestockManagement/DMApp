@@ -19,20 +19,27 @@ appgetpaddocks <- function(property, username, password){
   paddocks <- mongo(collection = "Paddocks", db = "DataMuster", url = pass, verbose = T)
 
   lookfor <- sprintf('{"stationname":true, "geometry.coordinates":true, "properties.hectares":true, "paddname":true,
-                     "ALMSrating":true, "LTCC_A":true, "LTCC_B":true, "LTCC_C":true, "LTCC_D":true, "_id":false}')
+                     "ALMSrating":true, "LTCC_A":true, "LTCC_B":true, "LTCC_C":true, "LTCC_D":true, "padduse":true, "condition":true, "_id":false}')
   filter <- sprintf('{"stationname":"%s"}', property)
 
   tempadds <- paddocks$find(query = filter, fields = lookfor)
 
-  tempadds <- tempadds%>%
-              mutate(hectares = properties$hectares,
-              geom = geometry$coordinates)%>%
-              select("stationname", "paddname", "hectares", "LTCC_A", "LTCC_B", "LTCC_C", "LTCC_D", "ALMSrating", "geom")
+  tempadds$LTCC <- 0
+  for(i in 1:nrow(tempadds)){
+    colname <- paste0("LTCC_", tempadds$condition[i])
+    colindex <- which(colnames(tempadds) == colname)
+    tempadds$LTCC[i] <- tempadds[i, colindex]
+  }
+
+  tempadds <- tempadds %>%
+    mutate(hectares = properties$hectares,
+           geom = geometry$coordinates) %>%
+  select("stationname", "paddname", "hectares", "LTCC_A", "LTCC_B", "LTCC_C", "LTCC_D", "ALMSrating", "padduse", "condition", "LTCC", "geom")
 
   cattle = SpatialPolygons(lapply(1:nrow(tempadds), function(x) Polygons(list(Polygon(matrix(tempadds$geom[[x]], ncol = 2))), paste0("ID",x))), proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
 
   cattleadd <- tempadds%>%
-               select(stationname, paddname, hectares, LTCC_A, LTCC_B, LTCC_C, LTCC_D, ALMSrating)
+               select(stationname, paddname, hectares, LTCC_A, LTCC_B, LTCC_C, LTCC_D, ALMSrating, padduse, condition, LTCC)
 
   PropPadds <- SpatialPolygonsDataFrame(cattle, cattleadd, match.ID=FALSE)
 
