@@ -18,8 +18,12 @@ appgetpaddocks <- function(property, username, password){
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   paddocks <- mongo(collection = "Paddocks", db = "DataMuster", url = pass, verbose = T)
 
+  prop <- appgetstations(property = property, accesslevel = "0", username = username, password = password)
+
   lookfor <- sprintf('{"stationname":true, "geometry.coordinates":true, "properties.hectares":true, "paddname":true,
-                     "ALMSrating":true, "LTCC_A":true, "LTCC_B":true, "LTCC_C":true, "LTCC_D":true, "padduse":true, "condition":true, "_id":false}')
+                     "ALMSrating":true, "LTCC_A":true, "LTCC_B":true, "LTCC_C":true, "LTCC_D":true, "padduse":true, "condition":true,
+                     "estDM_ha":true, "estDM_date":true, "DMsamples_n":true, "DMsamples_ha":true, "DMsamples_date":true, "availDM_ha":true, "DMI_ha":true,"_id":false}')
+
   filter <- sprintf('{"stationname":"%s"}', property)
 
   tempadds <- paddocks$find(query = filter, fields = lookfor)
@@ -33,13 +37,25 @@ appgetpaddocks <- function(property, username, password){
 
   tempadds <- tempadds %>%
     mutate(hectares = properties$hectares,
-           geom = geometry$coordinates) %>%
-  select("stationname", "paddname", "hectares", "LTCC_A", "LTCC_B", "LTCC_C", "LTCC_D", "ALMSrating", "padduse", "condition", "LTCC", "geom")
+           geom = geometry$coordinates,
+           DMsamples_date = as.Date(DMsamples_date, tz = prop$timezone),
+           DMsamples_date = as.character(DMsamples_date),
+           DMsamples_date = ifelse(DMsamples_date == "1970-01-01", "", DMsamples_date),
+           estDM_date = as.Date(estDM_date, tz = prop$timezone),
+           estDM_date = as.character(estDM_date),
+           estDM_date = ifelse(estDM_date == "1970-01-01", "", estDM_date),
+           DMsamples_ha = ifelse(DMsamples_ha == 0, NA, DMsamples_ha),
+           estDM_ha = ifelse(estDM_ha == 0, NA, estDM_ha),
+           availDM_ha = ifelse(availDM_ha == 0, NA, availDM_ha),
+           DMI_ha = ifelse(DMI_ha == 0, NA, DMI_ha))%>%
+  select("stationname", "paddname", "hectares", "LTCC_A", "LTCC_B", "LTCC_C", "LTCC_D", "ALMSrating", "padduse", "condition", "LTCC",
+         "estDM_ha", "estDM_date", "DMsamples_n", "DMsamples_ha", "DMsamples_date", "availDM_ha", "DMI_ha", "geom")
 
   cattle = SpatialPolygons(lapply(1:nrow(tempadds), function(x) Polygons(list(Polygon(matrix(tempadds$geom[[x]], ncol = 2))), paste0("ID",x))), proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
 
   cattleadd <- tempadds%>%
-               select(stationname, paddname, hectares, LTCC_A, LTCC_B, LTCC_C, LTCC_D, ALMSrating, padduse, condition, LTCC)
+               select(stationname, paddname, hectares, LTCC_A, LTCC_B, LTCC_C, LTCC_D, ALMSrating, padduse, condition, LTCC,
+                      estDM_ha, estDM_date, DMsamples_n, DMsamples_ha, DMsamples_date, availDM_ha, DMI_ha)
 
   PropPadds <- SpatialPolygonsDataFrame(cattle, cattleadd, match.ID=FALSE)
 
