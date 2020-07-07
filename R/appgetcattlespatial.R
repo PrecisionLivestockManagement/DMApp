@@ -34,24 +34,27 @@ appgetcattlespatial <- function(property, sex, category, paddock, zoom, username
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"RFID":true, "properties.Paddock":true, "properties.AE":true,  "_id":false}')
+  lookfor <- sprintf('{"properties.Paddock":true, "properties.AE":true, "properties.category":true, "properties.stweight":true, "properties.stwtdate":true,
+                     "properties.wkweight":true, "properties.wkwtdate":true, "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
   if(nrow(cattleinfo) == 0){
     cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)}
 
-  cattleinfo <- cattleinfo%>%
-                mutate(Paddock = properties$Paddock,
-                       AE = properties$AE)
+  cattleinfo1 <- cattleinfo$properties %>%
+                 mutate(weight = ifelse(wkwtdate >= stwtdate, wkweight, stweight),
+                        weightdate = ifelse(wkwtdate >= stwtdate, as.character(wkwtdate), as.character(stwtdate)),
+                        weightdate = as.Date(weightdate),
+                        weight = ifelse(weight == 0, NA, weight))
 
-  cattleinfo <- cattleinfo[-1]
-
-  countcattle <- cattleinfo %>%
-                 group_by(Paddock) %>%
+  countcattle <- cattleinfo1 %>%
+                 group_by(Paddock, category) %>%
                  summarise(cattle = n(),
-                           AE = sum(AE)) %>%
-                 mutate(AE = round(AE, 0))
+                           AE = round(sum(AE),0),
+                           avweight = round(mean(as.numeric(weight), na.rm = T),0),
+                           lastdate = max(weightdate)) %>%
+                 mutate(avweight = ifelse(is.nan(avweight), NA, avweight))
 
   paddocks1 <- DMApp::appgetpaddocks(property = property, username = username, password = password)
 
