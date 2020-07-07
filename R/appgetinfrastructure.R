@@ -27,7 +27,7 @@ appgetinfrastructure <- function(property, username, password){
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"stationname":true, "properties.asset_id":true, "properties.filename":true, "_id":false}')
+  lookfor <- sprintf('{"stationname":true, "properties.asset_id":true, "properties.filename":true, "properties.lastsignal":true, "properties.Paddock":true, "_id":false}')
 
   infsinfo <- infrastructure$find(query = filter, fields = lookfor)
 
@@ -36,6 +36,7 @@ appgetinfrastructure <- function(property, username, password){
   infsinfo <- cbind(infsinfo[-1], infsinfo$properties)
 
   infsinfo <- infsinfo%>%
+              mutate(status = ifelse(as.numeric(Sys.time() - lastsignal) < 60, "Active", ifelse(as.numeric(Sys.time() - lastsignal) <= 180, "Check", "Not Active"))) %>%
               filter(asset_id != "xxxxxx")
 
   return(infsinfo)
