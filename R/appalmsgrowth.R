@@ -68,8 +68,10 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
 
     cattleweights <- data.frame()}else{
 
+      # Find the number of cattle in the mob
       RFIDS <- length(unique(weights$RFID))
 
+      #Calculate the number and herd percentage of weights per week
       weeklystats <- weights%>%
         mutate(Date = as.Date(Date, tz = timezone))%>%
         group_by(Date)%>%
@@ -77,10 +79,12 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         mutate(Prop = round(NumberWts/RFIDS*100,0)) %>%
         filter(Prop != 0)
 
+      #Find the date that has the minimum number of weights that is >= the minimum percentage required
       dateselect <- weeklystats%>%
                     filter(Prop >= cattleprop)%>%
                     filter(Prop == min(Prop))
 
+      #Find the RFIDs of the cattle that had a weight recorded on the above date (dateselect)
       cattleRFIDs <- weights %>%
         mutate(Date = as.Date(Date, tz = timezone)) %>%
         filter(Date %in% dateselect$Date, avweight != 0) %>%
@@ -89,27 +93,53 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         summarise(Number = n())%>%
         filter(Number == nrow(dateselect))
 
-      cattleweights <- weights%>%
+      #Calculate the number and herd percentage of weights per week for these cattle
+      cattleweights <- weights %>%
         filter(RFID %in% cattleRFIDs$RFID)%>%
         mutate(Date = as.Date(Date, tz = timezone))%>%
         group_by(Date)%>%
         summarise(MeanWt = mean(avweight[avweight != 0]), NumberWts = length(avweight[avweight != 0]))%>%
         mutate(MeanWt = round(MeanWt, 0),
-               NumberWts = ifelse(NumberWts == 0, NA, NumberWts)) %>%
-        filter(NumberWts == nrow(cattleRFIDs))
+               NumberWts = ifelse(NumberWts == 0, NA, NumberWts),
+               PropWts = round(NumberWts/RFIDS*100,0)) #%>%
+        #filter(NumberWts == nrow(cattleRFIDs))
 
-      missingdates <- weighdays[which(!(weighdays %in% cattleweights$Date))]
+      #Look for another date that has a lower number of weights for these cattle but is still >= the minimum percentage required
+      dateselect2 <- cattleweights%>%
+        filter(PropWts >= cattleprop)%>%
+        filter(PropWts == min(PropWts))
+
+      #Find the RFIDs of the cattle that had a weight recorded on the above date (dateselect2)
+      cattleRFIDs2 <- weights %>%
+        filter(RFID %in% cattleRFIDs$RFID)%>%
+        mutate(Date = as.Date(Date, tz = timezone))%>%
+        filter(avweight !=0,
+               Date == dateselect2$Date)
+
+      #Calculate the number and herd percentage of weights per week for these cattle
+      cattleweights2 <- weights %>%
+        filter(RFID %in% cattleRFIDs2$RFID)%>%
+        mutate(Date = as.Date(Date, tz = timezone))%>%
+        group_by(Date)%>%
+        summarise(MeanWt = mean(avweight[avweight != 0]), NumberWts = length(avweight[avweight != 0]))%>%
+        mutate(MeanWt = round(MeanWt, 0),
+               NumberWts = ifelse(NumberWts == 0, NA, NumberWts),
+               PropWts = round(NumberWts/RFIDS*100,0)) %>%
+      filter(NumberWts == nrow(cattleRFIDs2))
+
+      missingdates <- weighdays[which(!(weighdays %in% cattleweights2$Date))]
 
       if(length(missingdates) >= 1){
-        toadd <- data.frame(Date = missingdates, MeanWt = rep(NA, length(missingdates)), NumberWts = rep(NA, length(missingdates)))
-        cattleweights <- rbind(cattleweights, toadd)}
+        toadd <- data.frame(Date = missingdates, MeanWt = rep(NA, length(missingdates)), NumberWts = rep(NA, length(missingdates)), PropWts = rep(NA, length(missingdates)))
+        cattleweights2 <- rbind(cattleweights2, toadd)}
 
-      cattleweights <- cattleweights %>%
+      cattleweights2 <- cattleweights2 %>%
         arrange(Date)%>%
+        select(-PropWts)%>%
         mutate(MeanWt = as.numeric(MeanWt),
                Date = as.character(as.Date(Date, tz = timezone), format = "%b %d"))
     }
 
-  return(cattleweights)
+  return(cattleweights2)
 
 }
