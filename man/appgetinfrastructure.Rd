@@ -4,10 +4,12 @@
 \alias{appgetinfrastructure}
 \title{Retrieves infrastructure from the DataMuster database}
 \usage{
-appgetinfrastructure(property, username, password)
+appgetinfrastructure(property, timezone, username, password)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
+
+\item{timezone}{the timezone of the property to display the weekly weight data}
 
 \item{username}{a username to access the DataMuster database}
 
