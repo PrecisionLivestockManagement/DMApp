@@ -40,7 +40,7 @@ appgetpaddocks <- function(property, username, password){
            geom = geometry$coordinates,
            DMsamples_date = as.Date(DMsamples_date, tz = prop$timezone),
            DMsamples_date = as.character(DMsamples_date),
-           DMsamples_date = ifelse(DMsamples_date == "1970-01-01", "", DMsamples_date),
+           DMsamples_date = ifelse(DMsamples_date == "1970-01-01", NA, DMsamples_date),
            estDM_date = as.Date(estDM_date, tz = prop$timezone),
            estDM_date = as.character(estDM_date),
            estDM_date = ifelse(estDM_date == "1970-01-01", "", estDM_date),
