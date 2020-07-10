@@ -40,8 +40,8 @@ appgetinfrastructure <- function(property, timezone, username, password){
 
   infsinfo <- infsinfo%>%
               mutate(lastsignal = format(as.POSIXct(lastsignal), tz = timezone),
-                     long = coordinates[[1]][1],
-                     lat = coordinates[[1]][2],
+                     long = as.numeric(coordinates[[1]][1]),
+                     lat = as.numeric(coordinates[[1]][2]),
               status = ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) < 60, "Active", ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 180, "Check", "Not Active"))) %>%
               filter(asset_id != "xxxxxx")%>%
               select(-coordinates)
