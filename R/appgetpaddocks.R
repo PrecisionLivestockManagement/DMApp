@@ -59,6 +59,21 @@ appgetpaddocks <- function(property, username, password){
 
   PropPadds <- SpatialPolygonsDataFrame(cattle, cattleadd, match.ID=FALSE)
 
+  cattlelist <- DMApp::appgetcattle(property = property, sex = "all", category = "all", zoom = NULL, paddock = NULL, username = username, password = password)
+
+  for(i in 1:nrow(PropPadds@data)){
+
+    PropPadds$long[i] <- PropPadds@polygons[[i]]@labpt[1]
+    PropPadds$lat[i] <- PropPadds@polygons[[i]]@labpt[2]
+
+    PropPadds$cattle[i] <- ifelse(PropPadds$paddname[i] %in% cattlelist$Paddock, sum(cattlelist$cattle[PropPadds$paddname[i] == cattlelist$Paddock]), 0)
+    PropPadds$AE[i] <- ifelse(PropPadds$paddname[i] %in% cattlelist$Paddock, sum(cattlelist$AE[PropPadds$paddname[i] == cattlelist$Paddock]), 0)
+    PropPadds$daysleft[i] <- ifelse(PropPadds$AE[i] != 0, round(PropPadds$availDM_ha[i]/PropPadds$DMI_ha[i],0), NA)
+
+    if(!is.na(PropPadds$daysleft[i])){PropPadds$destockdate[i] <- as.character(Sys.Date()+as.numeric(PropPadds$daysleft[i]))}else{PropPadds$destockdate[i] <- NA}
+
+  }
+
   return(PropPadds)
 
 }
