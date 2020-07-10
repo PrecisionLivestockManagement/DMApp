@@ -22,7 +22,7 @@ appgetcattle(property, sex, category, paddock, zoom, username, password)
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a spatialpointsdataframe with a list of cattle RFID numbers and associated coordinates
+a dataframe with a list of cattle numbers by paddock
 }
 \description{
 This function retreives a list of cattle, their paddock allocations and spatial coordinates for display on the property map on the DataMuster website
