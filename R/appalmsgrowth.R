@@ -66,7 +66,7 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
 
   if(nrow(weights) == 0){
 
-    cattleweights <- data.frame()}else{
+    cattleweights2 <- data.frame()}else{
 
       # Find the number of cattle in the mob
       RFIDS <- length(unique(weights$RFID))
@@ -114,7 +114,7 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         filter(RFID %in% cattleRFIDs$RFID)%>%
         mutate(Date = as.Date(Date, tz = timezone))%>%
         filter(avweight !=0,
-               Date == dateselect2$Date)
+               Date == dateselect2$Date[1])
 
       #Calculate the number and herd percentage of weights per week for these cattle
       cattleweights2 <- weights %>%
