@@ -64,19 +64,19 @@ appmanagetable <- function(property, sex, category, paddock, zoom, username, pas
   }
 
   cattleinfof <- cattleinfo%>%
-                 mutate_at(vars(birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.character, format = "%b %d %Y") %>%
-                 replace(.  == "xxxxxx", " ") %>%
-                 replace(.  == "Jan 01 1970", " ") %>%
-                 replace(.  == "Dec 31 1969", " ") %>%
+                 mutate_at(vars(birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.character) %>%
+                 replace(.  == "xxxxxx", NA) %>%
                  mutate(sex = caseconvert(sex), category = caseconvert(category), colour = caseconvert(colour), horn = caseconvert(horn),
                         weaned = caseconvert(weaned), desexed = caseconvert(desexed)) %>%
-                 mutate(AE = ifelse(AE == "0", "", AE),
-                        #foetalage = ifelse(foetalage == "0", "", foetalage),
-                        estcalvingdate = ifelse(as.Date(estcalvingdate, format = "%b %d %Y") < paste0(substr(Sys.Date(),1,4), "-05-01"), " ", estcalvingdate)) %>%
-                 replace(is.na(.), " ") %>%
+                 mutate(AE = ifelse(AE == "0", NA, AE),
+                        estcalvingdate = ifelse(estcalvingdate < paste0(substr(Sys.Date(),1,4), "-05-01"), NA, estcalvingdate)
+                        ) %>%
+                 #replace(estcalvingdate  < as.Date(paste0(substr(Sys.Date(),1,4), "-05-01")), NA) %>%
+                 mutate_at(vars(birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.Date) %>%
                  filter(RFID != "xxxxxx") %>%
+                 replace(.  == "1970-01-01", NA) %>%
                  select(RFID, Management, sex, category, Paddock, breed, colour, brand, horn, birthDate, damMTag, sireMTag, rego, weaned, desexed,
-                        AE, estcalvingdate, calvingdate, foetalagedate, foetalage, entryDate, PaddockdateIN, PrevPaddock)%>%
+                        AE, estcalvingdate, calvingdate, foetalagedate, foetalage, entryDate, PaddockdateIN, PrevPaddock) %>%
                  rename("Tag" = Management, "Sex" = sex, "Category" = category, "Breed" = breed, "Colour" = colour, "Brand" = brand, "Horn status" = horn,
                         "Date of birth" = birthDate, "Dam tag" = damMTag, "Sire tag" = sireMTag, "Registration" = rego, "Weaned" = weaned,
                         "Desexed" = desexed, "AE rating" = AE, "Est. calving date" = estcalvingdate,
