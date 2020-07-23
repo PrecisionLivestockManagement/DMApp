@@ -54,14 +54,16 @@ appweightstable <- function(property, sex, category, paddock, zoom, timezone, us
   attr(s,"tzone") <- timezone
 
   cattleinfof <- cattleinfo%>%
-                 mutate(wkwtdate = as.character(wkwtdate, format = "%b %d %Y"),
-                        wkwtdate = ifelse(wkwtdate == "Jan 01 1970" | wkwtdate == "Dec 31 1969", "", wkwtdate),
+                 mutate(wkwtdate = as.character(wkwtdate),
+                        wkwtdate = ifelse(wkwtdate == "1970-01-01", NA, wkwtdate),
+                        wkwtdate = as.Date(wkwtdate, tz = timezone),
                         wkweight = round(as.numeric(wkweight), 0),
-                        wkweight = ifelse(wkweight == 0, as.character(""), as.character(wkweight)),
-                        stwtdate = as.character(stwtdate, format = "%b %d %Y"),
-                        stwtdate = ifelse(stwtdate == "Jan 01 1970" | stwtdate == "Dec 31 1969", "", stwtdate),
+                        wkweight = ifelse(wkweight == 0, NA, wkweight),
+                        stwtdate = as.character(stwtdate),
+                        stwtdate = ifelse(stwtdate == "1970-01-01", NA, stwtdate),
+                        stwtdate = as.Date(stwtdate, tz = timezone),
                         stweight = round(as.numeric(stweight), 0),
-                        stweight = ifelse(stweight == 0, as.character(""), as.character(stweight)),
+                        stweight = ifelse(stweight == 0, NA, stweight),
                         recordedtime = round(as.numeric(difftime(s, recordedtime, units = "hours")),0),
                         recordedtime = ifelse(recordedtime > 1000, NA, recordedtime))%>%
                  rename("Tag" = Management, "Sex" = sex, "Category" = category, "Hours since last ALMS record" = recordedtime,
