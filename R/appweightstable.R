@@ -66,6 +66,7 @@ appweightstable <- function(property, sex, category, paddock, zoom, timezone, us
                         stweight = ifelse(stweight == 0, NA, stweight),
                         recordedtime = round(as.numeric(difftime(s, recordedtime, units = "hours")),0),
                         recordedtime = ifelse(recordedtime > 1000, NA, recordedtime))%>%
+                        replace(.  == "1970-01-01", NA) %>%
                  rename("Tag" = Management, "Sex" = sex, "Category" = category, "Hours since last ALMS record" = recordedtime,
                        "ALMS Weight Date" = wkwtdate, "Last Average ALMS Weight (kg)" = wkweight, "Crush Weight Date" = stwtdate, "Last Crush Weight (kg)" = stweight)%>%
                  select(RFID, Tag, Sex, Category, Paddock, `Hours since last ALMS record`, `Last Average ALMS Weight (kg)`, `ALMS Weight Date`, `Last Crush Weight (kg)`, `Crush Weight Date`)%>%
