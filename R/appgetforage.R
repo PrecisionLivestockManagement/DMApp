@@ -24,7 +24,7 @@ appgetforage <- function(property, username, password){
 
   forageinfo <- forage$find(query = filter, fields = lookfor)
 
-  if(nrow(forageinfo) != 0){
+  if (nrow(forageinfo) == 0){forageinfo <- forage$find(query = '{"property":"xxxxxx"}', fields = lookfor)}
 
   for(i in 1:nrow(forageinfo)){
 
@@ -34,7 +34,8 @@ appgetforage <- function(property, username, password){
     }
 
   forageinfo <- forageinfo%>%
-                select(-coordinates)}
+                filter(property != "xxxxxx")%>%
+                select(-coordinates)
 
   return(forageinfo)
 
