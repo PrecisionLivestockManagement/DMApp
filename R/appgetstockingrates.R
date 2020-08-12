@@ -17,7 +17,15 @@ appgetstockingrates <- function(property, start, timezone, username, password){
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   stockingrates <- mongo(collection = "StockingRates", db = "DataMuster", url = pass, verbose = T)
 
+  todaysdate <- Sys.time()
+  attr(todaysdate, "tzone") <- timezone
+  todaysdate <- as.Date(todaysdate, tz = timezone)
+
+  days <- as.numeric(todaysdate - as.Date(start, tz = timezone))
+
   paddocks <- appgetpaddocks(property = property, username = username, password = password)
+
+  grazingpaddocks <- paddocks$paddname[paddocks$padduse == "grazing"]
 
   property <- paste(unlist(property), collapse = '", "' )
   property <- sprintf('"stationname":{"$in":["%s"]},', property)
@@ -39,23 +47,26 @@ appgetstockingrates <- function(property, start, timezone, username, password){
 
   stockinfo <- stockingrates$find(query = search, fields = lookfor)
 
-  if (nrow(stockinfo) == 0){stockinfo <- stockingrates$find(query = '{"property":"xxxxxx"}', fields = lookfor)}
+  #if (nrow(stockinfo) == 0){stockinfo <- stockingrates$find(query = '{"property":"xxxxxx"}', fields = lookfor)}
 
-  stockinfo <- stockinfo%>%
-               filter(stationname != "xxxxxx") %>%
-               group_by(Paddock) %>%
-               summarise(TotalAE = round(sum(TotalAE),0))
+  paddinfo <- data.frame()
 
-  missingpads <- paddocks@data%>%
-                 filter(!(paddname %in% stockinfo$Paddock))%>%
-                 select(paddname)%>%
-                 rename(Paddock = paddname)%>%
-                 mutate(TotalAE = 0)
+  for(i in 1:length(grazingpaddocks)){
+    stockAEs <- stockinfo$TotalAE[stockinfo$Paddock == grazingpaddocks[i]]
+    grazingdays <- length(stockAEs)
+    spelldays <- rep(0, each = days - length(stockAEs))
+    STCC <- round(mean(c(stockAEs, spelldays)), 0)
 
-  stockinfo1 <- rbind(stockinfo, missingpads)%>%
-                arrange(Paddock)
+    row <- data.frame("Paddock" = grazingpaddocks[i], "grazingdays" = grazingdays, "spelldays" = length(spelldays), "STCC" = STCC)
+    paddinfo <- rbind(paddinfo, row)
+  }
 
-  return(stockinfo1)
+  paddinfo1 <- left_join(paddinfo, paddocks@data, by = c("Paddock" = "paddname"))%>%
+               select(Paddock, grazingdays, spelldays, STCC, LTCC) %>%
+               mutate(STCCperc = round((STCC/LTCC)*100,0))%>%
+               mutate_at(vars(STCCperc), ~replace(., is.nan(.), 0))
+
+  return(paddinfo1)
 
 }
 

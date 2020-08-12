@@ -4,7 +4,7 @@
 \alias{appgetstockingrates}
 \title{Retreives property information from the DataMuster database}
 \usage{
-appgetstockingrates(property, username, password)
+appgetstockingrates(property, start, timezone, username, password)
 }
 \arguments{
 \item{property}{a list of property names associated with the user}
@@ -14,7 +14,7 @@ appgetstockingrates(property, username, password)
 \item{password}{a password to access the DataMuster database}
 }
 \value{
-a dataframe showing property names and timezone
+a dataframe showing the number of daily AE's by paddock
 }
 \description{
 This function retrieves property information from the DataMuster database for configuration of the DataMuster website
