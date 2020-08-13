@@ -57,7 +57,7 @@ appgetstockingrates <- function(property, start, timezone, username, password){
     spelldays <- rep(0, each = days - length(stockAEs))
     STCC <- round(mean(c(stockAEs, spelldays)), 0)
 
-    row <- data.frame("Paddock" = grazingpaddocks[i], "grazingdays" = grazingdays, "spelldays" = length(spelldays), "STCC" = STCC)
+    row <- data.frame("Paddock" = grazingpaddocks[i], "grazingdays" = grazingdays, "spelldays" = length(spelldays), "STCC" = STCC, stringsAsFactors = FALSE)
     paddinfo <- rbind(paddinfo, row)
   }
 
