@@ -64,7 +64,8 @@ appgetstockingrates <- function(property, start, timezone, username, password){
   paddinfo1 <- left_join(paddinfo, paddocks@data, by = c("Paddock" = "paddname"))%>%
                select(Paddock, grazingdays, spelldays, STCC, LTCC) %>%
                mutate(STCCperc = round((STCC/LTCC)*100,0))%>%
-               mutate_at(vars(STCCperc), ~replace(., is.nan(.), 0))
+               mutate_at(vars(STCCperc), ~replace(., is.nan(.), 0)) %>%
+               mutate(STCCcategory = cut(STCCperc, breaks = c(-Inf, 25, 50, 75, 100, 125, Inf), labels = c("0 - 25%", "26 - 50%", "51 - 75%", "76 - 100%", "101 - 125%", "125%+")))
 
   return(paddinfo1)
 
