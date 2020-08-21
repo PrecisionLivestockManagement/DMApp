@@ -55,15 +55,17 @@ appgetstockingrates <- function(property, start, timezone, username, password){
     stockAEs <- stockinfo$TotalAE[stockinfo$Paddock == grazingpaddocks[i]]
     grazingdays <- length(stockAEs)
     spelldays <- rep(0, each = days - length(stockAEs))
+    spelldaysto12months <-  rep(0, each = 365 - days)
     STCC <- round(mean(c(stockAEs, spelldays)), 0)
+    STCCto12months <- round(mean(c(stockAEs, spelldays, spelldaysto12months)), 0)
 
-    row <- data.frame("Paddock" = grazingpaddocks[i], "grazingdays" = grazingdays, "spelldays" = length(spelldays), "STCC" = STCC, stringsAsFactors = FALSE)
+    row <- data.frame("Paddock" = grazingpaddocks[i], "grazingdays" = grazingdays, "spelldays" = length(spelldays), "spelldaysto12months" = length(spelldaysto12months), "STCC" = STCC, "STCCto12months" = STCCto12months, stringsAsFactors = FALSE)
     paddinfo <- rbind(paddinfo, row)
   }
 
   paddinfo1 <- left_join(paddinfo, paddocks@data, by = c("Paddock" = "paddname"))%>%
-               select(Paddock, grazingdays, spelldays, STCC, LTCC) %>%
-               mutate(STCCperc = round((STCC/LTCC)*100,0))%>%
+               select(Paddock, grazingdays, spelldays, spelldaysto12months, STCC, STCCto12months, LTCC) %>%
+               mutate(STCCperc = round((STCCto12months/LTCC)*100,0))%>%
                mutate_at(vars(STCCperc), ~replace(., is.nan(.), 0)) %>%
                mutate(STCCcategory = cut(STCCperc, breaks = c(-Inf, 25, 50, 75, 100, 125, Inf), labels = c("0 - 25%", "26 - 50%", "51 - 75%", "76 - 100%", "101 - 125%", "125%+")))
 
