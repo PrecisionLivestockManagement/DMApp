@@ -35,7 +35,8 @@ appgetforage <- function(property, username, password){
 
   forageinfo <- forageinfo%>%
                 filter(property != "xxxxxx")%>%
-                select(-coordinates)
+                select(-coordinates)%>%
+                mutate(forcategory = cut(DM_ha, breaks = c(-Inf, 1000, 2000, 3000, 4000, 5000, Inf), labels = c("< 1000", "1000 - 2000", "2001 - 3000", "3001 - 4000", "4001 - 5000", "> 5000")))
 
   return(forageinfo)
 
