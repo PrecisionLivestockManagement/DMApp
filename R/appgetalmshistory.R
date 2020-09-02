@@ -53,14 +53,14 @@ appgetalmshistory <- function(cattle_id = NULL, RFID = NULL, MTag = NULL, proper
 
 
   if(is.null(start)){}else{
-    if(timezone == "Australia/Brisbane"){
+    if(substr(timezone,1,9) == "Australia"){
       start <- sprintf('"dateON":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
         if(timezone == "America/Argentina/Buenos_Aires"){
           start <- sprintf('"dateON":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
   }
 
   if(is.null(end)){}else{
-    if(timezone == "Australia/Brisbane"){
+    if(substr(timezone,1,9) == "Australia"){
       end <- sprintf('"dateOFF":{"$lt":{"$date":"%s"}},', strftime(as.POSIXct(paste0(end+1, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
         if(timezone == "America/Argentina/Buenos_Aires"){
           end <- sprintf('"dateOFF":{"$lt":{"$date":"%s"}},', strftime(as.POSIXct(paste0(end+1, "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}

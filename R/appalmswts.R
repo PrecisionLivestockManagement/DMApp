@@ -35,7 +35,7 @@ appalmswts <- function(property, sex, category, paddock, zoom, start, rangewt1, 
 
   dates <- seq(as.Date(paste0(start)), as.Date(paste0(Sys.Date())), by = "day")
 
-  if(timezone == "Australia/Brisbane"){
+  if(substr(timezone,1,9) == "Australia"){
   weighdays <- dates[weekdays(dates) == "Sunday"]}else{
     if(timezone == "America/Argentina/Buenos_Aires"){
       weighdays <- dates[weekdays(dates) == "Saturday"]}}

@@ -25,7 +25,7 @@ apptodaysdata <- function(alms, timezone, start, username, password){
 
     alms <- sprintf('"Location":"%s",', alms)
 
-      if(timezone == "Australia/Brisbane"){
+    if(substr(timezone,1,9) == "Australia"){
         start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(start-1,1,10), "T14:00:00Z"))}else{
           if(timezone == "America/Argentina/Buenos_Aires"){
             start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(start,1,10), "T03:00:00Z"))}}

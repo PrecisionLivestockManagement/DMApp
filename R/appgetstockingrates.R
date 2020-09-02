@@ -30,7 +30,7 @@ appgetstockingrates <- function(property, start, timezone, username, password){
   property <- paste(unlist(property), collapse = '", "' )
   property <- sprintf('"stationname":{"$in":["%s"]},', property)
 
-    if(timezone == "Australia/Brisbane"){
+    if(substr(timezone,1,9) == "Australia"){
       start <- sprintf('"date":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}else{
         if(timezone == "America/Argentina/Buenos_Aires"){
           start <- sprintf('"date":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "13:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))}}
