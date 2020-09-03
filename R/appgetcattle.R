@@ -54,7 +54,8 @@ appgetcattle <- function(property, sex, category, paddock, zoom, username, passw
                            AE = round(sum(AE),0),
                            avweight = round(mean(as.numeric(weight), na.rm = T),0),
                            lastdate = max(weightdate)) %>%
-                 mutate(avweight = ifelse(is.nan(avweight), NA, avweight))
+                 mutate(avweight = ifelse(is.nan(avweight), NA, avweight)) %>%
+                 filter(Paddock != "xxxxxx")
 
   # paddocks1 <- DMApp::appgetpaddocks(property = property, username = username, password = password)
   #
