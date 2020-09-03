@@ -50,6 +50,8 @@ appalmswts <- function(property, sex, category, paddock, zoom, start, rangewt1, 
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
+  cattleinfo <- cattleinfo %>% filter(RFID != "xxx xxxxxxxxxxxx")
+
   # Set up query to search for weeklywts
 
   RFID <- paste(unlist(cattleinfo$RFID), collapse = '", "' )
