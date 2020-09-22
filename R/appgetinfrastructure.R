@@ -23,6 +23,7 @@ appgetinfrastructure <- function(property, timezone, username, password){
 
   currenttime <- Sys.time()
   attr(currenttime,"tzone") <- timezone
+  currenttime <- as.character(currenttime)
 
   # Set up query to search for cattle
 
@@ -40,9 +41,9 @@ appgetinfrastructure <- function(property, timezone, username, password){
 
   infsinfo <- infsinfo%>%
               mutate(lastsignal = format(as.POSIXct(lastsignal), tz = timezone),
-                     long = as.numeric(coordinates[[1]][1]),
-                     lat = as.numeric(coordinates[[1]][2]),
-              status = ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) < 60, "Active", ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 180, "Check", "Not Active"))) %>%
+                     long = as.numeric(unlist(lapply(coordinates, `[[`, 1))),
+                     lat = as.numeric(unlist(lapply(coordinates, `[[`, 2))),
+              status = ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 180, "Active", ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 360, "Check", "Not Active"))) %>%
               filter(asset_id != "xxxxxx")%>%
               select(-coordinates)
 
