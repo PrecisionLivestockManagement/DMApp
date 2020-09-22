@@ -15,7 +15,7 @@
 #' @export
 
 
-apptodaysdata <- function(alms, timezone, start, username, password){
+apptodaysdata <- function(property, alms, timezone, start, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
@@ -23,7 +23,11 @@ apptodaysdata <- function(alms, timezone, start, username, password){
 
   if(length(alms) == 0){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
 
-    alms <- sprintf('"Location":"%s",', alms)
+    unit <- appgetinfrastructure(property = property, timezone = "Australia/Brisbane", username = username, password = password) # Timezone doesn't matter here as it is not used
+
+    unit <- unit %>% filter(asset_id == alms)
+
+    alms <- sprintf('"Location":"%s",', unit$filename)
 
     if(substr(timezone,1,9) == "Australia"){
         start <- sprintf('"datetime":{"$gte":{"$date":"%s"}},', paste0(substr(start-1,1,10), "T14:00:00Z"))}else{

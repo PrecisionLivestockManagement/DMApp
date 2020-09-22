@@ -4,7 +4,16 @@
 \alias{appalmsusegraph}
 \title{Retrieves data for the ALMS Use graph from the DataMuster database}
 \usage{
-appalmsusegraph(property, start, sex, category, alms, username, password)
+appalmsusegraph(
+  property,
+  start,
+  sex,
+  category,
+  paddock,
+  zoom,
+  username,
+  password
+)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
@@ -15,11 +24,11 @@ appalmsusegraph(property, start, sex, category, alms, username, password)
 
 \item{category}{the category of cattle to be returned, determined by the "Breeders or Growers" filter}
 
-\item{alms}{the allocated alms unit of the cattle to be returned, determined from the "ALMS Access:" drop down selector}
-
 \item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
+
+\item{alms}{the allocated alms unit of the cattle to be returned, determined from the "ALMS Access:" drop down selector}
 }
 \value{
 a dataframe with a list of cattle and a daily visit indicator, 0 = not recorded and 1 = recorded

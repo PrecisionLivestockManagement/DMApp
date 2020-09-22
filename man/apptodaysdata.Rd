@@ -4,9 +4,11 @@
 \alias{apptodaysdata}
 \title{Retrieves daily WoW data from the DataMuster database}
 \usage{
-apptodaysdata(alms, timezone, start, username, password)
+apptodaysdata(property, alms, timezone, start, username, password)
 }
 \arguments{
+\item{property}{the name of the property to search the database}
+
 \item{alms}{the name of the alms unit}
 
 \item{timezone}{the timezone of the property to display the weight data}
@@ -16,8 +18,6 @@ apptodaysdata(alms, timezone, start, username, password)
 \item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
-
-\item{property}{the name of the property to search the database}
 }
 \value{
 a dataframe of WoW weights that have been recorded during the specified time period
