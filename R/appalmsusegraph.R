@@ -17,16 +17,25 @@
 #' @export
 
 
-appalmsusegraph <- function(property, start, sex, category, alms, username, password){
+appalmsusegraph <- function(property, start, sex, category, paddock, zoom, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
   almsuse <- mongo(collection = "ALMSUse", db = "DataMuster", url = pass, verbose = T)
 
+  unit <- appgetinfrastructure(property = property, timezone = "Australia/Brisbane", username = username, password = password) # timezone doesn't matter here as it won't be used
+
+  if(is.null(paddock)){
+   alms <- unit$asset_id
+   alms <- paste(unlist(alms), collapse = '", "' )
+   alms <- sprintf('"ALMS":{"$in":["%s"]},', alms)}else{
+   unit <- unit %>% filter(Paddock == paddock)
+   alms <- sprintf('"ALMS":"%s",', unit$asset_id)}
+
   property <- sprintf('"Property":"%s",', property)
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"Sex":"%s",', sex)}
   if(category == "all"){category <- NULL} else {category <- sprintf('"Category":"%s",', category)}
-  if(alms == "All units" | alms == "No Data"){alms <- NULL} else {alms <- sprintf('"ALMS":"%s",', alms)}
+  if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
   start <- sprintf('"Date":{"$gte":{"$date":"%s"}},', strftime(as.POSIXct(paste0(start, "00:00:00")), format="%Y-%m-%dT%H:%M:%OSZ", tz = "GMT"))
 
   # Set up query to search for data
@@ -58,7 +67,8 @@ appalmsusegraph <- function(property, start, sex, category, alms, username, pass
   allcattle <- full_join(breeding, growing, by = "Date")%>%
                replace(is.na(.), 0)%>%
                mutate(novisitnum = (breedingcattlenum - breedingusenum) + (growingcattlenum - growingusenum),
-               novisitpercent = ifelse(breedingcattlenum == 0 | growingcattlenum == 0, 100 - (breedingpercentuse + growingpercentuse), 200 - (breedingpercentuse + growingpercentuse)))
+               novisitpercent = ifelse(breedingcattlenum == 0 | growingcattlenum == 0, 100 - (breedingpercentuse + growingpercentuse), 200 - (breedingpercentuse + growingpercentuse)))%>%
+               arrange(Date)
 
   allcattle <- allcattle%>%
                ungroup()%>%
