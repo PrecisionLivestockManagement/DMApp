@@ -57,7 +57,7 @@ appweightstableNEW <- function(property, sex, category, paddock, zoom, timezone,
   for(i in 1:length(collist)){
   if("POSIXt" %in% class(cattleinfo[,i])){
     if(collist[i] %in% c("stwtdate", "birthDate", "entryDate", "estcalvingdate", "calvingdate", "PaddockdateIN", "foetalagedate")){
-  attributes(cattleinfo[,i])$tzone <- "Australia/Brisbane"}else{
+    attributes(cattleinfo[,i])$tzone <- "Australia/Brisbane"}else{
     attributes(cattleinfo[,i])$tzone <- timezone}}}
 
   s <- Sys.time()
@@ -73,6 +73,7 @@ appweightstableNEW <- function(property, sex, category, paddock, zoom, timezone,
                   mutate_at(vars(wkwtdate, stwtdate, recordedtime, birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.character) %>%
                   replace(.  == "1970-01-01 10:00:00", NA) %>%
                   replace(.  == "1969-12-31 21:00:00", NA) %>%
+                  replace(.  == "1970-01-01 09:30:00", NA) %>%
                   replace(.  == "xxxxxx", NA) %>%
                   mutate(AE = ifelse(AE == "0", NA, AE),
                          estcalvingdate = ifelse(estcalvingdate < paste0(substr(Sys.Date(),1,4), "-05-01"), NA, estcalvingdate)) %>%
