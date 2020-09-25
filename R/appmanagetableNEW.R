@@ -34,7 +34,7 @@ appmanagetableNEW <- function(property, sex, category, paddock, zoom, username, 
   filter <- paste0(filter, "}")
 
   lookfor <- sprintf('{"RFID":true, "properties.Management":true, "properties.Paddock":true, "properties.sex":true, "properties.category":true,
-                     "_id":false}')
+                      "properties.AUTODRAFT":true, "properties.AUTODRAFT_dir":true, "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
@@ -62,7 +62,9 @@ appmanagetableNEW <- function(property, sex, category, paddock, zoom, username, 
   cattleinfof <- cattleinfo%>%
                  #mutate_at(vars(birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.character) %>%
                  replace(.  == "xxxxxx", NA) %>%
-                 mutate(sex = caseconvert(sex), category = caseconvert(category)
+                 mutate(sex = caseconvert(sex),
+                        category = caseconvert(category),
+                        AUTODRAFT_dir = ifelse(AUTODRAFT_dir == "S", "Straight", ifelse(AUTODRAFT_dir == "L", "Left", ifelse(AUTODRAFT_dir == "R", "Right", NA)))
                         #, colour = caseconvert(colour), horn = caseconvert(horn),
                         #weaned = caseconvert(weaned), desexed = caseconvert(desexed)
                         ) %>%
@@ -73,8 +75,8 @@ appmanagetableNEW <- function(property, sex, category, paddock, zoom, username, 
                  #mutate_at(vars(birthDate, entryDate, estcalvingdate, calvingdate, PaddockdateIN, foetalagedate), as.Date) %>%
                  filter(RFID != "xxxxxx") %>%
                  #replace(.  == "1970-01-01", NA) %>%
-                 select(RFID, Management, sex, category, Paddock) %>%
-                 rename("Tag" = Management, "Sex" = sex, "Category" = category)
+                 select(RFID, Management, sex, category, Paddock, AUTODRAFT_dir) %>%
+                 rename("Tag" = Management, "Sex" = sex, "Category" = category, "Auto Draft Direction" = AUTODRAFT_dir)
 
   return(cattleinfof)
 
