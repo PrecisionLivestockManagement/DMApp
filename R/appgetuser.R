@@ -22,9 +22,9 @@ appgetuser <- function(email, username, password){
 
   userinfo <- users$find(query = filter, fields = lookfor)
 
-  if(nrow(userinfo) != 0){
-  userinfo <- userinfo%>%
-              select(loginemail, accesslevel, writeaccess, stations)}
+  # if(nrow(userinfo) != 0){
+  # userinfo <- userinfo%>%
+  #             select(loginemail, accesslevel, writeaccess, stations)}
 
   return(userinfo)
 
