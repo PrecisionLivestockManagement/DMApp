@@ -54,27 +54,8 @@ appgetcattle <- function(property, sex, category, paddock, zoom, username, passw
                            AE = round(sum(AE),0),
                            avweight = round(mean(as.numeric(weight), na.rm = T),0),
                            lastdate = max(weightdate)) %>%
-                 mutate(avweight = ifelse(is.nan(avweight), NA, avweight)) %>%
+                 mutate(avweight = ifelse(is.nan(avweight), 0, avweight)) %>%
                  filter(Paddock != "xxxxxx")
-
-  # paddocks1 <- DMApp::appgetpaddocks(property = property, username = username, password = password)
-  #
-  # for(i in 1:nrow(paddocks1@data)){
-  #
-  #   lat <- paddocks1@polygons[[i]]@labpt[1]
-  #   long <- paddocks1@polygons[[i]]@labpt[2]
-  #
-  #   paddocks1$lat[i] <- paddocks1@polygons[[i]]@labpt[1]
-  #   paddocks1$long[i] <- paddocks1@polygons[[i]]@labpt[2]
-  #
-  # }
-  #
-  # paddocks1 <- data.frame(paddocks1 %>%
-  #              select(paddname, lat, long)) %>%
-  #              rename(Paddock = paddname)
-  #
-  # cattlepaddata <- data.frame(left_join(countcattle, paddocks1, by = "Paddock") %>%
-  #                  filter(Paddock != "xxxxxx"))
 
   return(countcattle)
 
