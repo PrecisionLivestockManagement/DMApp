@@ -31,21 +31,18 @@ appgetinfrastructure <- function(property, timezone, username, password){
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"stationname":true, "properties.asset_id":true, "properties.type":true, "properties.filename":true, "properties.lastsignal":true, "properties.Paddock":true, "geometry.coordinates":true, "_id":false}')
+  lookfor <- sprintf('{"properties.asset_id":true, "properties.type":true, "properties.filename":true, "properties.lastsignal":true, "properties.Paddock":true, "geometry.coordinates":true, "_id":false}')
 
   infsinfo <- infrastructure$find(query = filter, fields = lookfor)
 
   if (nrow(infsinfo) == 0){infsinfo <- infrastructure$find(query = '{"stationname":"xxxxxx"}', fields = lookfor)}
 
-  infsinfo <- cbind(infsinfo[c(-1,-2)], infsinfo$properties, infsinfo$geometry)
-
-  infsinfo <- infsinfo%>%
+  infsinfo <- infsinfo$properties %>%
               mutate(lastsignal = format(as.POSIXct(lastsignal), tz = timezone),
-                     long = as.numeric(unlist(lapply(coordinates, `[[`, 1))),
-                     lat = as.numeric(unlist(lapply(coordinates, `[[`, 2))),
+                     long = as.numeric(unlist(lapply(infsinfo$geometry$coordinates, `[[`, 1))),
+                     lat = as.numeric(unlist(lapply(infsinfo$geometry$coordinates, `[[`, 2))),
               status = ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 180, "Active", ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 360, "Check", "Not Active"))) %>%
-              filter(asset_id != "xxxxxx")%>%
-              select(-coordinates)
+              filter(asset_id != "xxxxxx")
 
   return(infsinfo)
 
