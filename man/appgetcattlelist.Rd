@@ -4,18 +4,18 @@
 \alias{appgetcattlelist}
 \title{Retrieves cattle from the DataMuster database}
 \usage{
-appgetcattlelist(property, paddock, zoom, username, password)
+appgetcattlelist(property, username, password)
 }
 \arguments{
 \item{property}{the name of the property to search the database}
 
-\item{paddock}{the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map}
-
-\item{zoom}{indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter}
-
 \item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
+
+\item{zoom}{indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter}
+
+\item{paddock}{the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map}
 }
 \value{
 a dataframe with a list of cattle numbers by paddock
