@@ -54,8 +54,24 @@ appgetcattle <- function(property, sex, category, paddock, zoom, username, passw
                            AE = round(sum(AE),0),
                            avweight = round(mean(as.numeric(weight), na.rm = T),0),
                            lastdate = max(weightdate)) %>%
-                 mutate(avweight = ifelse(is.nan(avweight), 0, avweight)) %>%
-                 filter(Paddock != "xxxxxx")
+                 mutate(avweight = ifelse(is.nan(avweight), 0, avweight))
+
+  # searchpads <- paste(unlist(countcattle$Paddock), collapse = '", "' )
+  #
+  # filterpaddock <- sprintf('{"stationname":"%s", "paddname":{"$in":["%s"]}}', property, searchpads)
+  #
+  # paddinfo <- paddocks$find(query = filterpaddock, fields = sprintf('{"paddname":true, "geometry":true, "_id":false}'))
+  #
+  # if(nrow(paddinfo) == 0){
+  #   paddinfo <- paddocks$find(query = sprintf('{"stationname":"xxxxxx"}'), fields = sprintf('{"paddname":true, "geometry":true, "_id":false}'))}
+  #
+  # paddinfo <- paddinfo %>%
+  #             mutate(long = as.numeric(unlist(lapply(paddinfo$geometry$coordinates, `[[`, 1))),
+  #                    lat = as.numeric(unlist(lapply(paddinfo$geometry$coordinates, `[[`, 2))),) %>%
+  #             select(-geometry)
+  #
+  # countcattle <- left_join(countcattle, paddinfo, by = c("Paddock" = "paddname")) %>%
+  #                filter(Paddock != "xxxxxx")
 
   return(countcattle)
 
