@@ -26,21 +26,16 @@ appgetforage <- function(property, username, password){
 
   if (nrow(forageinfo) == 0){forageinfo <- forage$find(query = '{"property":"xxxxxx"}', fields = lookfor)}
 
-  for(i in 1:nrow(forageinfo)){
-
-    forageinfo$long[i] <- forageinfo$coordinates[[i]][1]
-    forageinfo$lat[i] <- forageinfo$coordinates[[i]][2]
-
-    }
-
   forageinfo <- forageinfo%>%
                 filter(property != "xxxxxx")%>%
-                select(-coordinates)%>%
-                mutate(forcategory = cut(DM_ha, breaks = c(-Inf, 1000, 2000, 3000, 4000, 5000, Inf), labels = c("< 1000", "1000 - 2000", "2001 - 3000", "3001 - 4000", "4001 - 5000", "> 5000")))
+                mutate(long = as.numeric(unlist(lapply(forageinfo$coordinates, `[[`, 1))),
+                lat = as.numeric(unlist(lapply(forageinfo$coordinates, `[[`, 2))))%>%
+                select(-coordinates)
 
   return(forageinfo)
 
 }
+
 
 
 
