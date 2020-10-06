@@ -30,7 +30,9 @@ appgetpaddocklist <- function(property, username, password){
 
   padds <- paddocklist$find(query = filter, fields = lookfor)
 
-  paddinfo <- subset(padds, select = -geom)
+  paddinfo <- subset(padds, select = -geom) %>%
+              mutate(forcategory = factor(forcategory, levels= c("< 1000", "1000 - 2000", "2001 - 3000", "3001 - 4000", "4001 - 5000", "> 5000"))) #%>%
+              #arrange(forcategory)
 
   cattle = SpatialPolygons(lapply(1:nrow(padds), function(x) Polygons(list(Polygon(matrix(padds$geom[[x]], ncol = 2))), paste0("ID",x))),
                            proj4string = CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
