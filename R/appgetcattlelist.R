@@ -31,7 +31,7 @@ appgetcattlelist <- function(property, username, password){
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"Paddock":true, "category":true, "cattle":true, "AE":true, "avweight":true, "lastdate":true, "_id":false}')
+  lookfor <- sprintf('{"Paddock":true, "category":true, "cattle":true, "AE":true, "avweight":true, "lastwtdate":true, "_id":false}')
 
   cattleinfo <- cattlelist$find(query = filter, fields = lookfor)
 
