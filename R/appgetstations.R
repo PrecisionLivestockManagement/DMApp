@@ -27,15 +27,6 @@ appgetstations <- function(property, accesslevel, username, password){
 
   propertyinfo <- station$find(query = filter, fields = lookfor)
 
-  # propertyinfo <- propertyinfo%>%
-  #                 select(stationname, timezone)%>%
-  #                 arrange(stationname)
-
-  # propertyinfo$todaysdate <- as.Date("1970-01-01")
-  #
-  # for(i in 1:nrow(propertyinfo)){
-  #   propertyinfo$todaysdate[i] <- as.Date(Sys.time(), tz = propertyinfo$timezone[i])}
-
   return(propertyinfo)
 
 }
