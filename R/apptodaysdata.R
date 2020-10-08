@@ -21,7 +21,7 @@ apptodaysdata <- function(property, alms, timezone, start, username, password){
 
   wowdata <- mongo(collection = "DailyWts", db = "DataMuster", url = pass, verbose = T)
 
-  if(length(alms) == 0){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
+  if(alms == "No Data"){dataf <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("RFID", "Weight", "Datetime"))}else{
 
     unit <- appgetinfrastructure(property = property, timezone = "Australia/Brisbane", username = username, password = password) # Timezone doesn't matter here as it is not used
 
