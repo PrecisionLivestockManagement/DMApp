@@ -26,7 +26,7 @@ appupdateRFID <- function(RFID, MTag, newRFID, date, username, password){
 
   # Checks that the new RFID numbers are not already registered in the database
 
-  filtercattle <- sprintf('{"RFID":{"$in":["%s"]}}', checknewRFID)
+  filtercattle <- sprintf('{"RFID":{"$in":["%s"]}}', newRFID)
   check <- cattle$count(query = filtercattle)
 
   if (check != 0) {
