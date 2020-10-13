@@ -35,7 +35,9 @@ appalmswts <- function(property, sex, category, paddock, zoom, start, rangewt1, 
 
   dates <- seq(as.Date(paste0(start)), as.Date(paste0(Sys.Date())), by = "day")
 
-  if(substr(timezone,1,9) == "Australia"){
+  timezone <- ifelse(substr(timezone,1,9) == "Australia", "Australia/Brisbane", timezone)
+
+  if(timezone == "Australia/Brisbane"){
   weighdays <- dates[weekdays(dates) == "Sunday"]}else{
     if(timezone == "America/Argentina/Buenos_Aires"){
       weighdays <- dates[weekdays(dates) == "Saturday"]}}
@@ -50,7 +52,7 @@ appalmswts <- function(property, sex, category, paddock, zoom, start, rangewt1, 
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
-  cattleinfo <- cattleinfo %>% filter(RFID != "xxx xxxxxxxxxxxx")
+  if(nrow(cattleinfo) != 0){cattleinfo <- cattleinfo %>% filter(RFID != "xxx xxxxxxxxxxxx")}
 
   # Set up query to search for weeklywts
 
