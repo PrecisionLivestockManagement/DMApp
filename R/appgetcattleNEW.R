@@ -35,29 +35,18 @@ appgetcattleNEW <- function(property, sex, category, paddock, zoom, username, pa
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 
-  lookfor <- sprintf('{"RFID":true, "_id":false}')
+  lookfor <- sprintf('{"RFID":true, "properties.Management":true, "_id":false}')
 
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
   if(nrow(cattleinfo) == 0){rfids <- list()}else{
-  rfids <- cattleinfo$RFID[cattleinfo$RFID != "xxx xxxxxxxxxxxx"]}
-
-  # if(nrow(cattleinfo) == 0){
-  #   cattleinfo <- cattle$find(query = sprintf('{"RFID":"xxxxxx"}'), fields = lookfor)}
-  #
-  # cattleinfo1 <- cattleinfo$properties %>%
-  #                mutate(weight = ifelse(wkwtdate >= stwtdate, wkweight, stweight),
-  #                       weightdate = ifelse(wkwtdate >= stwtdate, as.character(wkwtdate), as.character(stwtdate)),
-  #                       weightdate = as.Date(weightdate),
-  #                       weight = ifelse(weight == 0, NA, weight))
-  #
-  # countcattle <- cattleinfo1 %>%
-  #                group_by(Paddock, category) %>%
-  #                summarise(cattle = n(),
-  #                          AE = round(sum(AE),0),
-  #                          avweight = round(mean(as.numeric(weight), na.rm = T),0),
-  #                          lastdate = max(weightdate)) %>%
-  #                mutate(avweight = ifelse(is.nan(avweight), 0, avweight))
+  rfids <- cattleinfo %>%
+           filter(RFID != "xxx xxxxxxxxxxxx")%>%
+           mutate(Management = properties$Management,
+           ID = paste0(RFID, " / ", Management))%>%
+           select(ID)
+  rfids <- rfids$ID
+  }
 
   return(rfids)
 
