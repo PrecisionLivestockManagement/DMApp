@@ -18,6 +18,8 @@ appupdateRFID <- function(RFID, MTag, newRFID, date, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
+  paddockhistory <- mongo(collection = "PaddockHistory", db = "DataMuster", url = pass, verbose = T)
+  almshistory <- mongo(collection = "ALMSHistory", db = "DataMuster", url = pass, verbose = T)
 
   # Checks that the RFID numbers are in the correct format for the database
 
@@ -35,6 +37,7 @@ appupdateRFID <- function(RFID, MTag, newRFID, date, username, password){
 
   for (i in 1:length(RFID)){
 
+    #Update RFID and RFIDHistory in the Cattle Collection
     if(RFID[i] != "xxx xxxxxxxxxxxx"){
       RFIDS <- sprintf('{"RFID":"%s"}', RFID[i])}else{
         RFIDS <- sprintf('{"stationname":"%s", "properties.Management":"%s"}', property, MTag[i])}
@@ -46,6 +49,34 @@ appupdateRFID <- function(RFID, MTag, newRFID, date, username, password){
 
       cattle$update(RFIDS, RFIDI) # Has to update RFIDI first otherwise won't update RFIDhist
       cattle$update(RFIDS, RFIDIlast)
+
+      #Update RFID in the PaddockHistory collection
+
+      if(RFID[i] != "xxx xxxxxxxxxxxx"){
+        RFIDSI <- sprintf('{"RFID":"%s"}', RFID[i])}else{
+          RFIDSI <- sprintf('{"stationname":"%s", "Management":"%s"}', property, MTag[i])}
+
+      padhist <- paddockhistory$find(query = RFIDSI, fields='{"_id":true}')
+
+      for(p in 1:nrow(padhist)){
+
+        IDS <- sprintf('{"_id":{"$oid":"%s"}}', padhist$`_id`[p])
+        IDI <- sprintf('{"$set":{"RFID":"%s"}}', newRFID[i])
+        paddockhistory$update(IDS, IDI)
+      }
+
+      #Update RFID in the ALMSHistory collection
+
+      almshist <- almshistory$find(query = RFIDSI, fields='{"_id":true}')
+
+      if(nrow(almshist) != 0){
+
+      for(j in 1:nrow(almshist)){
+
+        IDS <- sprintf('{"_id":{"$oid":"%s"}}', almshist$`_id`[j])
+        IDI <- sprintf('{"$set":{"RFID":"%s"}}', newRFID[i])
+        almshistory$update(IDS, IDI)
+      }}
 
   }
 
