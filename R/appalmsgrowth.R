@@ -33,6 +33,13 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
 
   dates <- seq(as.Date(paste0(start)), as.Date(paste0(Sys.Date())), by = "day")
 
+  timezone <- ifelse(substr(timezone,1,9) == "Australia", "Australia/Brisbane", timezone)
+  #
+  # if(timezone == "Australia/Brisbane"){
+  #   weighdays <- dates[weekdays(dates) == "Sunday"]}else{
+  #     if(timezone == "America/Argentina/Buenos_Aires"){
+  #       weighdays <- dates[weekdays(dates) == "Saturday"]}}
+
   if(substr(timezone,1,9) == "Australia"){
     weighdays <- dates[weekdays(dates) == "Sunday"]}else{
       if(timezone == "America/Argentina/Buenos_Aires"){
@@ -113,6 +120,7 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
       cattleRFIDs2 <- weights %>%
         filter(RFID %in% cattleRFIDs$RFID)%>%
         mutate(Date = as.Date(Date, tz = timezone))%>%
+        #mutate(Date = as.Date(Date, tz = timezone))%>%
         filter(avweight !=0,
                Date == dateselect2$Date[1])
 
