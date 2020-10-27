@@ -21,7 +21,6 @@
 
 appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezone, cattleprop, username, password){
 
-
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
@@ -34,12 +33,10 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
 
   dates <- seq(as.Date(paste0(start)), as.Date(paste0(Sys.Date())), by = "day")
 
-  timezone <- ifelse(substr(timezone,1,9) == "Australia", "Australia/Brisbane", timezone)
-
-  if(timezone == "Australia/Brisbane"){
-  weighdays <- dates[weekdays(dates) == "Sunday"]}else{
-    if(timezone == "America/Argentina/Buenos_Aires"){
-      weighdays <- dates[weekdays(dates) == "Saturday"]}}
+  if(substr(timezone,1,9) == "Australia"){
+    weighdays <- dates[weekdays(dates) == "Sunday"]}else{
+      if(timezone == "America/Argentina/Buenos_Aires"){
+        weighdays <- dates[weekdays(dates) == "Saturday"]}}
 
   # Set up query to search for cattle
 
@@ -84,8 +81,8 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
 
       #Find the date that has the minimum number of weights that is >= the minimum percentage required
       dateselect <- weeklystats%>%
-                    filter(Prop >= cattleprop)%>%
-                    filter(Prop == min(Prop))
+        filter(Prop >= cattleprop)%>%
+        filter(Prop == min(Prop))
 
       #Find the RFIDs of the cattle that had a weight recorded on the above date (dateselect)
       cattleRFIDs <- weights %>%
@@ -105,7 +102,7 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         mutate(MeanWt = round(MeanWt, 0),
                NumberWts = ifelse(NumberWts == 0, NA, NumberWts),
                PropWts = round(NumberWts/RFIDS*100,0)) #%>%
-        #filter(NumberWts == nrow(cattleRFIDs))
+      #filter(NumberWts == nrow(cattleRFIDs))
 
       #Look for another date that has a lower number of weights for these cattle but is still >= the minimum percentage required
       dateselect2 <- cattleweights%>%
@@ -115,7 +112,7 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
       #Find the RFIDs of the cattle that had a weight recorded on the above date (dateselect2)
       cattleRFIDs2 <- weights %>%
         filter(RFID %in% cattleRFIDs$RFID)%>%
-        #mutate(Date = as.Date(Date, tz = timezone))%>%
+        mutate(Date = as.Date(Date, tz = timezone))%>%
         filter(avweight !=0,
                Date == dateselect2$Date[1])
 
@@ -128,7 +125,7 @@ appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezon
         mutate(MeanWt = round(MeanWt, 0),
                NumberWts = ifelse(NumberWts == 0, NA, NumberWts),
                PropWts = round(NumberWts/RFIDS*100,0)) %>%
-      filter(NumberWts == nrow(cattleRFIDs2))
+        filter(NumberWts == nrow(cattleRFIDs2))
 
       missingdates <- weighdays[which(!(weighdays %in% cattleweights2$Date))]
 
