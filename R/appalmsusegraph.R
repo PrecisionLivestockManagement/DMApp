@@ -32,7 +32,9 @@ appalmsusegraph <- function(property, start, sex, category, paddock, zoom, usern
    unit <- unit %>% filter(Paddock == paddock)
    alms <- sprintf('"ALMS":"%s",', unit$asset_id)}
 
-  property <- sprintf('"Property":"%s",', property)
+  if(nrow(unit) == 0){allcattle <- data.frame()}else{
+
+   property <- sprintf('"Property":"%s",', property)
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"Sex":"%s",', sex)}
   if(category == "all"){category <- NULL} else {category <- sprintf('"Category":"%s",', category)}
   if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
@@ -73,7 +75,7 @@ appalmsusegraph <- function(property, start, sex, category, paddock, zoom, usern
   allcattle <- allcattle%>%
                ungroup()%>%
                mutate(Date = as.character(as.Date(Date, tz = "Australia/Brisbane"), format = "%b %d"))
-  }
+  }}
 
   return(allcattle)
 
