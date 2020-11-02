@@ -149,7 +149,7 @@ appalmsgrowthNEW <- function(property, sex, category, paddock, zoom, start, time
                Date = as.character(as.Date(Date, tz = timezone), format = "%b %d"))
 
       data <- data_frame(
-        RFID = paste0("Herd average (", cattleweights2$NumberWts[1], " cattle)"),
+        RFID = paste0("Herd average (", max(cattleweights2$NumberWts, na.rm = TRUE), " cattle)"),
         Date = cattleweights2$Date,
         avweight = cattleweights2$MeanWt)
 
