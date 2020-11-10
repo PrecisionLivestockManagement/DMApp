@@ -2,7 +2,7 @@
 % Please edit documentation in R/appalmswts.R
 \name{appalmswts}
 \alias{appalmswts}
-\title{Retrieves data for the ALMS Growth graph from the DataMuster database}
+\title{Retrieves data for the ALMS Weights graph from the DataMuster database}
 \usage{
 appalmswts(
   property,

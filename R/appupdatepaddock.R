@@ -81,7 +81,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
       IDSI <- sprintf('{"$set":{"dateOUT":{"$date":"%s"}, "currentPaddock":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), "FALSE")
       paddockhistory$update(IDII, IDSI)
 
-      cows <- appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
+      cows <- DMApp:appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
 
       appaddpaddockhistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, Paddock = paddock[i], currentPaddock = "TRUE",
                          dateIN = substr(date[i],1,10), dateOUT = NULL, username = username, password = password)
@@ -137,7 +137,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
               IDSI <- sprintf('{"$set":{"dateOFF":{"$date":"%s"}}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"))
               almshistory$update(IDII, IDSI)
 
-              cows <- get_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"))
+              cows <- DMApp::appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"))
 
               appaddalmshistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, ALMS = WOW$properties$asset_id, currentALMS = "TRUE",
                               dateON = substr(date[i],1,10), dateOFF = NULL, username = username, password = password)
@@ -155,7 +155,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
           cattle$update(RFIDS, IDI)
 
           #Update ALMSHistory collection
-          cows <- appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
+          cows <- DMApp::appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
 
           appaddalmshistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, ALMS = WOW$properties$asset_id, currentALMS = "TRUE",
                           dateON = substr(date[i],1,10), dateOFF = NULL, username = username, password = password)

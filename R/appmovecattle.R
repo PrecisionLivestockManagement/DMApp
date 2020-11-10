@@ -39,7 +39,7 @@ appmovecattle <- function(property, paddock, username, password){
   cattleinfospatial@data["property"] <- cattleinfo$stationname
   cattleinfospatial@data["ID"] <- cattleinfo$`_id`
 
-  pad <- apppaddocks(property, username = username, password = password)
+  pad <- appgetpaddocksspatial(property, username = username, password = password)
   cat <- cattleinfospatial
 
   kipper <- lapply(1:nrow(cat), function(x) {

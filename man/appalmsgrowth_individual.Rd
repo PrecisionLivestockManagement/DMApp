@@ -43,7 +43,7 @@ appalmsgrowth_individual(
 A dataframe of summarised data showing the average weight of cattle by date and the number of cattle included in the analysis
 }
 \description{
-This function retreives weekly weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
+This function retreives individual weekly weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

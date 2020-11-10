@@ -2,7 +2,7 @@
 % Please edit documentation in R/appgetforage.R
 \name{appgetforage}
 \alias{appgetforage}
-\title{Retreives property information from the DataMuster database}
+\title{Retreives forage information from the DataMuster database}
 \usage{
 appgetforage(property, username, password)
 }
@@ -17,7 +17,7 @@ appgetforage(property, username, password)
 a dataframe showing property names and timezone
 }
 \description{
-This function retrieves property information from the DataMuster database for configuration of the DataMuster website
+This function retrieves forage information from the DataMuster database for display on the DataMuster website
 }
 \author{
 Dave Swain \email{d.swain@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@cqu.edu.au}

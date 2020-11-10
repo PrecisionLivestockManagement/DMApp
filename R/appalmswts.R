@@ -1,4 +1,4 @@
-#' Retrieves data for the ALMS Growth graph from the DataMuster database
+#' Retrieves data for the ALMS Weights graph from the DataMuster database
 #'
 #' This function retreives weekly weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
 #' @name appalmswts

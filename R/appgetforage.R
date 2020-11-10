@@ -1,6 +1,6 @@
-#' Retreives property information from the DataMuster database
+#' Retreives forage information from the DataMuster database
 #'
-#' This function retrieves property information from the DataMuster database for configuration of the DataMuster website
+#' This function retrieves forage information from the DataMuster database for display on the DataMuster website
 #' @name appgetforage
 #' @param property a list of property names associated with the user
 #' @param username a username to access the DataMuster database

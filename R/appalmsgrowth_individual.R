@@ -1,6 +1,6 @@
 #' Retrieves data for the ALMS Growth graph from the DataMuster database
 #'
-#' This function retreives weekly weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
+#' This function retreives individual weekly weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
 #' @name appalmsgrowth_individual
 #' @param property the name of the property to search the database
 #' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
