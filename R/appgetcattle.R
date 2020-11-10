@@ -1,7 +1,7 @@
 #' Retrieves cattle from the DataMuster database
 #'
 #' This function retreives a list of current cattle RFIDs that are on an ALMS unit for display on the DataMuster website
-#' @name appgetcattleNEW
+#' @name appgetcattle
 #' @param property the name of the property to search the database
 #' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
 #' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
@@ -17,7 +17,7 @@
 #' @export
 
 
-appgetcattleNEW <- function(property, sex, category, paddock, zoom, username, password){
+appgetcattle <- function(property, sex, category, paddock, zoom, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)

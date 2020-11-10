@@ -1,7 +1,7 @@
 #' Retrieves data from the DataMuster database for the Table of Cattle Weights Data
 #'
 #' This function retreives the latest cattle weight data from the DataMuster database and prepares the data for table display on the DataMuster website
-#' @name appweightstableNEW
+#' @name appweightstable
 #' @param property the name of the property to search the database
 #' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
 #' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
@@ -17,7 +17,7 @@
 #' @export
 
 
-appweightstableNEW <- function(property, sex, category, paddock, zoom, timezone, username, password){
+appweightstable <- function(property, sex, category, paddock, zoom, timezone, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 

@@ -1,7 +1,7 @@
 #' Retrieves data for the ALMS Growth graph from the DataMuster database
 #'
 #' This function retreives weekly weight data from the DataMuster database and prepares the data for graphical display on the DataMuster website
-#' @name appalmsgrowthNEW
+#' @name appalmsgrowth
 #' @param property the name of the property to search the database
 #' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
 #' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
@@ -20,7 +20,7 @@
 #' @export
 
 
-appalmsgrowthNEW <- function(property, sex, category, paddock, zoom, start, timezone, cattleprop, username, password){
+appalmsgrowth <- function(property, sex, category, paddock, zoom, start, timezone, cattleprop, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
