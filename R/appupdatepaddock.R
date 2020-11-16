@@ -81,7 +81,7 @@ appupdatepaddock <- function(RFID, MTag, property, paddock, date, username, pass
       IDSI <- sprintf('{"$set":{"dateOUT":{"$date":"%s"}, "currentPaddock":"%s"}}', paste0(substr(date[i],1,10),"T","00:00:00","+1000"), "FALSE")
       paddockhistory$update(IDII, IDSI)
 
-      cows <- DMApp:appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
+      cows <- DMApp::appget_cattle(RFID = RFID[i], MTag = MTag[i], property = property, fields = c("RFID","properties.Management", "stationname"), username = username, password = password)
 
       appaddpaddockhistory(RFID = cows$RFID, cattle_id = cows$`_id`, MTag = cows$Management, property = cows$stationname, Paddock = paddock[i], currentPaddock = "TRUE",
                          dateIN = substr(date[i],1,10), dateOUT = NULL, username = username, password = password)
