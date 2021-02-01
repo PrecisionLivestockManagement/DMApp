@@ -13,24 +13,27 @@
 #' @export
 
 
-appupdatedraftdirection <- function(RFID, MTag, property, draftdirection, username, password){
+appupdatedraftdirection <- function(RFID, MTag, property, paddock, alms, draftdirection, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
 
-  draftdirection <- ifelse(draftdirection == "Straight", "S", ifelse(draftdirection == "Left", "L", "R"))
+  draftdirection <- ifelse(draftdirection == "Straight", "C", ifelse(draftdirection == "Left", "L", "R"))
 
-  for (i in 1:length(RFID)){
+  add_autodraft(RFID = RFID, mtag = MTag, property = property, paddock = paddock, alms = alms, direction = draftdirection)
 
-    if(RFID[i] != "xxx xxxxxxxxxxxx"){
-    IDS <- sprintf('{"RFID":"%s"}', RFID[i])}else{
-    IDS <- sprintf('{"stationname":"%s", "properties.Management":"%s"}', property, MTag[i])}
 
-    IDI <- sprintf('{"$set":{"properties.AUTODRAFT_dir":"%s"}}', draftdirection)
-
-    cattle$update(IDS, IDI)
-
-    }
+  # for (i in 1:length(RFID)){
+  #
+  #   if(RFID[i] != "xxx xxxxxxxxxxxx"){
+  #   IDS <- sprintf('{"RFID":"%s"}', RFID[i])}else{
+  #   IDS <- sprintf('{"stationname":"%s", "properties.Management":"%s"}', property, MTag[i])}
+  #
+  #   IDI <- sprintf('{"$set":{"properties.AUTODRAFT_dir":"%s"}}', draftdirection)
+  #
+  #   cattle$update(IDS, IDI)
+  #
+  #   }
 }
 
 

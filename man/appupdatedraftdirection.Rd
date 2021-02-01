@@ -8,6 +8,8 @@ appupdatedraftdirection(
   RFID,
   MTag,
   property,
+  paddock,
+  alms,
   draftdirection,
   username,
   password
