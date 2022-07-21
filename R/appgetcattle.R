@@ -7,6 +7,7 @@
 #' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
 #' @param zoom indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter
 #' @param paddock the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map
+#' @param id identification choice to be displayed
 #' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a dataframe with a list of cattle numbers by paddock
@@ -40,12 +41,12 @@ appgetcattle <- function(property, sex, category, paddock, zoom, username, passw
   cattleinfo <- cattle$find(query = filter, fields = lookfor)
 
   if(nrow(cattleinfo) == 0){rfids <- list()}else{
+
   rfids <- cattleinfo %>%
            filter(RFID != "xxx xxxxxxxxxxxx")%>%
-           mutate(Management = properties$Management,
-           ID = paste0(RFID, " / ", Management))%>%
-           select(ID)
-  rfids <- rfids$ID
+           mutate(Tag = properties$Management)%>%
+           select(RFID, Tag)
+
   }
 
   return(rfids)
