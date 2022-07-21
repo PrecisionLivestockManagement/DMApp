@@ -14,6 +14,7 @@ appalmsgrowth_individual(
   start,
   timezone,
   cattleprop,
+  identification,
   username,
   password
 )
@@ -34,6 +35,8 @@ appalmsgrowth_individual(
 \item{timezone}{the timezone of the property to display the weekly weight data}
 
 \item{cattleprop}{the minimum number of cattle required, as a percentage}
+
+\item{identification}{the selected identification (RFID or Tag)}
 
 \item{username}{a username to access the DataMuster database}
 

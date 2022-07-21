@@ -20,6 +20,8 @@ appgetcattle(property, sex, category, paddock, zoom, username, password)
 \item{username}{a username to access the DataMuster database}
 
 \item{password}{a password to access the DataMuster database}
+
+\item{id}{identification choice to be displayed}
 }
 \value{
 a dataframe with a list of cattle numbers by paddock
