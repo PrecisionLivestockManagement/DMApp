@@ -10,6 +10,7 @@
 #' @param start the minimum date of data to be returned, determined by the "Period for ALMS graphs" filter
 #' @param timezone the timezone of the property to display the weekly weight data
 #' @param cattleprop the minimum number of cattle required, as a percentage
+#' @param identification the selected identification (RFID or Tag)
 #' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return A dataframe of summarised data showing the average weight of cattle by date and the number of cattle included in the analysis
@@ -22,15 +23,18 @@
 #' @export
 
 
-appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoom, start, timezone, cattleprop, username, password){
+appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoom, start, timezone, cattleprop, identification, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
   weeklywts <- mongo(collection = "WeeklyWts", db = "DataMuster", url = pass, verbose = T)
 
-  #mobdata <- appalmsgrowth(property = property, sex = sex, category = category, paddock = paddock, zoom = zoom, start = start, timezone = timezone,
-  #                           cattleprop = cattleprop, username = username, password = password)
+  mobdata <- appalmsgrowth(property = property, sex = sex, category = category, paddock = paddock, zoom = zoom, start = start, timezone = timezone,
+                             cattleprop = cattleprop, username = username, password = password)
+
+  mob_dates <- mobdata[[1]]$date[which(!is.na(mobdata[[1]]$data))]
+  mob_dates <- as.POSIXct(mob_dates, format = "%B %d")
 
   if(is.null(RFID)){cattleweights4 <- list()}else{
 
@@ -73,6 +77,14 @@ appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoo
 
   weights <- weeklywts$find(query = filter, fields = lookfor)
 
+  # This section of code selects only the cattle included in the mob average trand line
+  # ids <- unique(weights$cattle_id)
+  #
+  # for(i in 1:length(ids)){
+  #   dts <- weights$Date[weights$cattle_id == ids[i] & weights$avweight != 0]
+  #   if("FALSE" %in% (mob_dates %in% dts))
+  #     weights <- weights[weights$cattle_id != ids[i],]}
+
   # Find cattle that have had a weekly weight each week and summarise the data by week
 
   if(nrow(weights) == 0){
@@ -82,10 +94,18 @@ appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoo
       cattleweights2 <- left_join(weights, cattleinfo, by = c("cattle_id" = "_id"))%>%
         mutate(avweight = ifelse(avweight == 0, NA, round(avweight,0)),
                Date = format(as.Date(Date, tz = timezone, format = "%Y-%m-%d"), "%d %b"),
-               Management = properties$Management,
-               ID = paste0(RFID, " / ", Management)
-               )%>%
-        select(Date, avweight, ID)
+               Management = properties$Management)
+
+      if(identification == "RFID"){
+        cattleweights2 <- cattleweights2 %>%
+                          rename(ID = RFID)%>%
+                          select(Date, avweight, ID)
+      }else{
+        cattleweights2 <- cattleweights2 %>%
+                          rename(ID = Management)%>%
+                          select(Date, avweight, ID)
+        }
+
 
       cattleweights3 <- cattleweights2 %>%
         group_by(name = ID) %>%
