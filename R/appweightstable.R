@@ -85,7 +85,8 @@ appweightstable <- function(property, sex, category, paddock, zoom, timezone, us
                         stweight = ifelse(stweight == 0, NA, stweight),
                         recordedtime = as.POSIXct(recordedtime, tz = timezone),
                         recordedtime = round(as.numeric(difftime(s, recordedtime, units = "hours")),0),
-                        recordedtime = ifelse(recordedtime > 1000, NA, recordedtime))%>%
+                        #recordedtime = ifelse(recordedtime > 2160, NA, recordedtime) #2160 hours equals 90 days
+                        )%>%
                   mutate(sex = caseconvert(sex), category = caseconvert(category), colour = caseconvert(colour), horn = caseconvert(horn),
                         weaned = caseconvert(weaned), desexed = caseconvert(desexed)) %>%
                  rename("Tag" = Management, "Sex" = sex, "Category" = category, "Hours since last ALMS record" = recordedtime,
