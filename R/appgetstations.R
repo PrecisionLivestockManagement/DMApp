@@ -21,7 +21,7 @@ appgetstations <- function(property, accesslevel, username, password){
   lookfor <- sprintf('{"stationname":true, "timezone":true, "_id":false}')
 
   if (accesslevel == "admin"){
-    filter <- sprintf('{"active":"%s"}', "TRUE")}else{
+    filter <- sprintf('{}')}else{
     property <- paste(unlist(property), collapse = '", "' )
     filter <- sprintf('{"active":"%s", "stationname":{"$in":["%s"]}}', "TRUE", property)}
 
