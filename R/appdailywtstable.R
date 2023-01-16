@@ -6,7 +6,7 @@
 #' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
 #' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
 #' @param zoom indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter
-#' @param paddock the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map
+#' @param alms the ALMS allocation of the cattle to be returned, determined by selecting an ALMS from the drop down menu
 #' @param username a username to access the DataMuster database
 #' @param password a password to access the DataMuster database
 #' @return a dataframe with a list of cattle RFID numbers, management tags and daily weight data
@@ -17,7 +17,7 @@
 #' @export
 
 
-appdailywtstable <- function(property, sex, category, paddock, zoom, timezone, start, username, password){
+appdailywtstable <- function(property, sex, category, alms, zoom, timezone, start, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
@@ -27,14 +27,13 @@ appdailywtstable <- function(property, sex, category, paddock, zoom, timezone, s
   property <- sprintf('"stationname":"%s",', property)
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"properties.sex":"%s",', sex)}
   if(category == "all"){category <- NULL} else {category <- sprintf('"properties.category":"%s",', category)}
-  if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
-  alms <- sprintf('"properties.ALMS":"%s",', "TRUE")
+  if(is.null(alms)){alms <- NULL}else{alms <- sprintf('"properties.ALMSasset_id":"%s",', alms)}
 
   dates <- as.character(seq.Date(start, as.Date(Sys.time(), tz = timezone), by = "days"))
 
   # Set up query to search for cattle
 
-  filter <- paste0("{", property, sex, category, paddock, alms,"}")
+  filter <- paste0("{", property, sex, category, alms,"}")
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 

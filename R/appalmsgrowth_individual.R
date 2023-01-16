@@ -6,7 +6,7 @@
 #' @param sex the sex of the cattle to be returned, determined by the "Males or Females" filter
 #' @param category the category of cattle to be returned, determined by the "Breeders or Growers" filter
 #' @param zoom indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter
-#' @param paddock the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map
+#' @param alms the ALMS allocation of the cattle to be returned, determined by selecting an ALMS from the drop down menu
 #' @param start the minimum date of data to be returned, determined by the "Period for ALMS graphs" filter
 #' @param timezone the timezone of the property to display the weekly weight data
 #' @param cattleprop the minimum number of cattle required, as a percentage
@@ -23,14 +23,14 @@
 #' @export
 
 
-appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoom, start, timezone, cattleprop, identification, username, password){
+appalmsgrowth_individual <- function(RFID, property, sex, category, alms, zoom, start, timezone, cattleprop, identification, username, password){
 
   pass <- sprintf("mongodb://%s:%s@datamuster-shard-00-00-8mplm.mongodb.net:27017,datamuster-shard-00-01-8mplm.mongodb.net:27017,datamuster-shard-00-02-8mplm.mongodb.net:27017/test?ssl=true&replicaSet=DataMuster-shard-0&authSource=admin", username, password)
 
   cattle <- mongo(collection = "Cattle", db = "DataMuster", url = pass, verbose = T)
   weeklywts <- mongo(collection = "WeeklyWts", db = "DataMuster", url = pass, verbose = T)
 
-  mobdata <- appalmsgrowth(property = property, sex = sex, category = category, paddock = paddock, zoom = zoom, start = start, timezone = timezone,
+  mobdata <- appalmsgrowth(property = property, sex = sex, category = category, alms = alms, zoom = zoom, start = start, timezone = timezone,
                              cattleprop = cattleprop, username = username, password = password)
 
   mob_dates <- mobdata[[1]]$date[which(!is.na(mobdata[[1]]$data))]
@@ -44,7 +44,7 @@ appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoo
   property <- sprintf('"stationname":"%s",', property)
   if(sex == "all"){sex <- NULL} else {sex <- sprintf('"properties.sex":"%s",', sex)}
   if(category == "all"){category <- NULL} else {category <- sprintf('"properties.category":"%s",', category)}
-  if(is.null(paddock)||zoom == 1){paddock <- NULL}else{paddock <- sprintf('"properties.Paddock":"%s",', paddock)}
+  if(is.null(alms)){alms <- NULL}else{alms <- sprintf('"properties.ALMSasset_id":"%s",', alms)}
 
   dates <- seq(as.Date(paste0(start)), as.Date(paste0(Sys.Date())), by = "day")
 
@@ -55,7 +55,7 @@ appalmsgrowth_individual <- function(RFID, property, sex, category, paddock, zoo
 
   # Set up query to search for cattle
 
-  filter <- paste0("{", RFID, property, sex, category, paddock,"}")
+  filter <- paste0("{", RFID, property, sex, category, alms,"}")
   filter <- substr(filter, 1 , nchar(filter)-2)
   filter <- paste0(filter, "}")
 

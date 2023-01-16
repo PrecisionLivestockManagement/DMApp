@@ -8,7 +8,7 @@ appweightstable(
   property,
   sex,
   category,
-  paddock,
+  alms,
   zoom,
   timezone,
   username,
@@ -22,7 +22,7 @@ appweightstable(
 
 \item{category}{the category of cattle to be returned, determined by the "Breeders or Growers" filter}
 
-\item{paddock}{the paddock allocation of the cattle to be returned, determined by selecting a paddock on the map}
+\item{alms}{the ALMS allocation of the cattle to be returned, determined by selecting an ALMS from the drop down menu}
 
 \item{zoom}{indicates whether to return cattle from the whole property or to filter cattle by paddock, determined by the "Paddock Groups" filter}
 
