@@ -35,16 +35,28 @@ appgetinfrastructure <- function(property, timezone, username, password){
 
   infsinfo <- infrastructure$find(query = filter, fields = lookfor)
 
-  if (nrow(infsinfo) == 0){infsinfo <- infrastructure$find(query = '{"stationname":"xxxxxx"}', fields = lookfor)}
+  if (nrow(infsinfo) == 0){infsinfo <- infrastructure$find(query = '{"stationname":"xxxxxx"}', fields = lookfor)}else{
+
+    if("lastvoltage" %in% colnames(infsinfo)){
 
   infsinfo <- infsinfo$properties %>%
               mutate(lastsignal = format(as.POSIXct(lastsignal), tz = timezone),
                      long = as.numeric(unlist(lapply(infsinfo$geometry$coordinates, `[[`, 1))),
                      lat = as.numeric(unlist(lapply(infsinfo$geometry$coordinates, `[[`, 2))),
               status = ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 180 && lastvoltage > 11.5, "Active",
-                              ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 360 | lastvoltage <= 11.5, "Check",
-                                     "Not Active"))) %>%
-              filter(asset_id != "xxxxxx")
+                              ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 360 | lastvoltage <= 11.5, "Check", "Not Active"))) %>%
+              filter(asset_id != "xxxxxx")}else{
+
+  infsinfo <- infsinfo$properties %>%
+    mutate(lastsignal = format(as.POSIXct(lastsignal), tz = timezone),
+           long = as.numeric(unlist(lapply(infsinfo$geometry$coordinates, `[[`, 1))),
+           lat = as.numeric(unlist(lapply(infsinfo$geometry$coordinates, `[[`, 2))),
+           status = ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 180, "Active",
+                           ifelse(as.numeric(difftime(currenttime, lastsignal, units = "mins")) <= 360, "Check", "Not Active"))) %>%
+    filter(asset_id != "xxxxxx")
+              }
+
+  }
 
   return(infsinfo)
 
