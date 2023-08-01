@@ -13,9 +13,7 @@ RoxygenNote: 7.2.3
 Imports:
   dplyr,
   mongolite,
-  keyring,
-  rgdal,
-  geojsonio,
   sp,
-  sf,
-  splancs
+  tidyr,
+  highcharter,
+  purr
