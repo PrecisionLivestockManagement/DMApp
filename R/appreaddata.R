@@ -11,7 +11,6 @@
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
 #' @import dplyr
-#' @import jsonlite
 #' @export
 
 
