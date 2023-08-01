@@ -12,7 +12,6 @@
 #' @return a dataframe with a list of cattle and a daily visit indicator, 0 = not recorded and 1 = recorded
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @import dplyr
 #' @export
 
