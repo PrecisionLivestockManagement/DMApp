@@ -12,7 +12,6 @@
 #' @return a message that indicates that the station has been successfully added
 #' @author Dave Swain \email{d.swain@@cqu.edu.au} and Lauren O'Connor \email{l.r.oconnor@@cqu.edu.au}
 #' @import mongolite
-#' @import keyring
 #' @export
 
 
