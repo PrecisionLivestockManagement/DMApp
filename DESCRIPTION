@@ -16,4 +16,4 @@ Imports:
   sp,
   tidyr,
   highcharter,
-  purr
+  purrr
